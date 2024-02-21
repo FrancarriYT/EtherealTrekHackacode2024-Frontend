@@ -1,6 +1,5 @@
 // src/App.jsx
 import React from 'react';
-import NavBar from './components/NavBar';
 import TextContent from './components/TextContent';
 import ContactInfo from './components/ContactInfo';
 import SpecialRates from './components/SpecialRates';
@@ -14,7 +13,6 @@ const App = () => {
       <TextContent />
       <ContactInfo />
       <SpecialRates />
-      {/* Otras secciones y componentes */}
     </div>
   );
 };
