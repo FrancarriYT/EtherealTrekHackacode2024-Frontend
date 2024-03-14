@@ -3,15 +3,16 @@ import './LoginForm.css';
 import { FaGithub, FaGoogle, FaFacebook } from 'react-icons/fa';
 import { searchEmpleado } from '../classes/Empleado/EmpleadoApi';
 import Empleado from '../classes/Empleado/Empleado';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { login } from '../classes/Empleado/EmpleadoAuth';
+import useSignIn from 'react-auth-kit/hooks/useSignIn';
 const LoginForm = () => {
-  const history = useNavigate();
   const { param } = useParams();
   const [empleado, setEmpleado] = useState(new Empleado());
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isChecked, setIsChecked] = useState(false);
+  const signIn = useSignIn(); // Use useSignIn hook here
 
   const search = async () => {
     if (param !== 'new') {
@@ -22,22 +23,18 @@ const LoginForm = () => {
     }
   };
 
-  // const verifyLogin = async () => {
-  //   if (param !== 'new') {
-  //     await login(email, password, history);
-  //   }
-  // };
   const verifyLogin = async () => {
     if (param !== 'new') {
-      const loginSuccessful = await login(email, password);
+      const loginSuccessful = await login(signIn, email, password); // Call login function here
       if (loginSuccessful) {
         console.log("Login successful");
-        history.push('/');
+        
       } else {
         console.log("Login failed");
       }
     }
   };
+
   useEffect(() => {
     search();
   }, [param]);
@@ -104,7 +101,7 @@ const LoginForm = () => {
     return () => {
       window.removeEventListener("resize", sizePage);
     };
-  }, [history]);
+  }, []);
 
   return (
     <div className="new-body">
@@ -160,7 +157,7 @@ const LoginForm = () => {
                 </label>
               </div>
               <button 
-              onClick={verifyLogin} className="bg-cyan-500 text-white">
+              onClick={verifyLogin} className="bg-cyan-500 text-white"type="button">
                 Entrar
               </button>
 
