@@ -1,24 +1,28 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FaQuestion, FaLanguage } from "react-icons/fa";
-
+import { Link, useNavigate } from "react-router-dom";
+import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import "./DarkModeButton.css";
 import { ThemeProvider, useTheme } from "../Theme-provider";
 import { Switch } from "../ui/switch";
 import { Label } from "@radix-ui/react-label";
-import { Link } from "react-router-dom";
-
-// import { Switch } from "@radix-ui/react-switch";
-// import { CustomSwitch } from "../SwitchButton/ui/CustomSwitch";
 
 const NavbarTopSection = () => {
   const { theme, setTheme } = useTheme();
   const [showUserPopup, setShowUserPopup] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const signOut = useSignOut();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedDarkMode = localStorage.getItem("darkMode");
     if (storedDarkMode !== null) {
       setTheme(storedDarkMode);
     }
+    
+    // Verificar si el usuario está autenticado mediante la existencia de la cookie "_auth"
+    const authCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('_auth='));
+    setIsLoggedIn(!!authCookie);
   }, [setTheme]);
 
   useEffect(() => {
@@ -27,6 +31,12 @@ const NavbarTopSection = () => {
 
   const toggleUserPopup = () => {
     setShowUserPopup(!showUserPopup);
+  };
+
+  const handleSignOut = () => {
+    signOut();
+    document.cookie = "_auth_refresh=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    navigate('/login');
   };
 
   return (
@@ -39,21 +49,6 @@ const NavbarTopSection = () => {
             alt="Logo"
             className="w-8 h-8 mr-4"
           />
-
-          {/* Modo Oscuro/Claro
-          <IonItem lines="none" className="dark-mode-toggle">
-            <IonToggle
-              slot="end"
-              checked={theme === "dark"}
-              onIonChange={() => setTheme(theme === "dark" ? "light" : "dark")}
-              color="primary"
-            />
-            <IonIcon
-              slot="start"
-              icon={theme === "dark" ? sunnyOutline : moonOutline}
-              className={`mode-icon ${theme === "dark" ? "dark" : "light"}`}
-            />
-          </IonItem> */}
         </div>
         <div className="flex items-center space-x-2  ">
           <Switch
@@ -80,7 +75,7 @@ const NavbarTopSection = () => {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <span>Iniciar sesión</span>
+                <span>{isLoggedIn ? "Perfil" : "Iniciar sesión"}</span>
               </div>
             </button>
 
@@ -100,7 +95,11 @@ const NavbarTopSection = () => {
                   <div>
                     <p>¡Hola!</p>
                     <hr className="border-black" />
-                    <Link to="/login">Iniciar sesión / Registrarse</Link>
+                    {isLoggedIn ? (
+                      <button onClick={handleSignOut}>Cerrar sesión</button>
+                    ) : (
+                      <Link to="/login">Iniciar Sesión / Registrarse</Link>
+                    )}
                   </div>
                 </div>
               </div>

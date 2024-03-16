@@ -3,11 +3,13 @@ import './LoginForm.css';
 import { FaGithub, FaGoogle, FaFacebook } from 'react-icons/fa';
 import { searchEmpleado } from '../classes/Empleado/EmpleadoApi';
 import Empleado from '../classes/Empleado/Empleado';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { loggedEmpleado, login } from '../classes/Empleado/EmpleadoAuth';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
+import { Toaster, toast } from 'sonner';
 
 const LoginForm = () => {
+  const navigate = useNavigate();
   const { param } = useParams();
   const [empleado, setEmpleado] = useState(new Empleado());
   const [email, setEmail] = useState('');
@@ -24,36 +26,41 @@ const LoginForm = () => {
     }
   };
 
-  const verifyLogin = async () => {
-    if (param !== 'new') {
-      try {
-        await login(signIn, email, password);
-        const loggedInEmpleado = await loggedEmpleado();
-        setEmpleado(loggedInEmpleado); // Assuming you want to set the logged in empleado
-        console.log("El apellido del usuario es:" , empleado.apellido);
+const verifyLogin = async () => {
+  if (param !== 'new') {
+    try {
+      await login(signIn, email, password);
+      const loggedInEmpleado = await loggedEmpleado();
+      setEmpleado(loggedInEmpleado);
 
-        if (isChecked) {
-          document.cookie = "rememberMe=true; max-age=604800";
-          console.log("Opción de mantener sesión creada. Creando cookie para recordar la sesión.");
-        }
-        else {
-          console.log("Opción de mantener sesión creada es falso. No se creará la cookie para recordar la sesión");
-        }
-        console.log("Logeo con éxito. Redirigiendo al Website.");
-      } catch (error) {
-        if (error.response && error.response.data) {
-          // If the server returns an error message, log it
-          console.error("Server error:", error.response.data.error);
-        } else if (error.message === "Failed to fetch") {
-          // If the request fails due to network issues
-          console.error("Failed to fetch. Please check your internet connection.");
-        } else {
-          // For any other unexpected errors
-          console.error("An unexpected error occurred:", error.message);
-        }
+      // Set logged-in empleado in local storage
+      localStorage.setItem('empleado', JSON.stringify(loggedInEmpleado));
+
+      if (isChecked) {
+        document.cookie = "rememberMe=true; max-age=604800";
+        console.log("Opción de mantener sesión creada. Creando cookie para recordar la sesión.");
+      }
+      else {
+        console.log("Opción de mantener sesión creada es falso. No se creará la cookie para recordar la sesión");
+      }
+
+      // Redirect to '/'
+      navigate('/'); // assuming you have access to history object or use withRouter HOC
+    } catch (error) {
+      if (error.response && error.response.data) {
+        // If the server returns an error message, log it
+        console.error("Server error:", error.response.data.error);
+      } else if (error.message === "Failed to fetch") {
+        // If the request fails due to network issues
+        console.error("Failed to fetch. Please check your internet connection.");
+      } else {
+        // For any other unexpected errors
+        console.error("An unexpected error occurred:", error.message);
+        toast.error('Fallo en el inicio de sesión. ¿Son las credenciales correctas?')
       }
     }
-  };
+  }
+};
   
   
 
@@ -128,6 +135,17 @@ const LoginForm = () => {
 
   return (
     <div className="new-body">
+        <Toaster
+          toastOptions={{
+            style: {
+              fontSize: '1.5rem', // Increase font size
+              padding: '1rem 1rem', // Increase padding
+            },
+          }}
+          richColors
+          closeButton
+          expand={true}
+        />
       <main>
         <div className="container__all">
           <div className="back__box">
@@ -157,7 +175,8 @@ const LoginForm = () => {
                 placeholder="Contraseña"
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <div className="form-group flex items-center">
+            <div className="form-group flex items-center gap-2">
+              <div className="checkbox-container">
                 <input
                   type="checkbox"
                   id="session-checkbox"
@@ -179,6 +198,7 @@ const LoginForm = () => {
                   Mantener sesión iniciada
                 </label>
               </div>
+            </div>
               <button 
               onClick={verifyLogin} className="bg-cyan-500 text-white"type="button">
                 Entrar

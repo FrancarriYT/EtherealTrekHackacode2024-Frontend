@@ -32,6 +32,7 @@
     "react-native-toggle-element": "^2.0.1",
     "react-router-dom": "^6.22.3",
     "shadcn-ui": "^0.8.0",
+    "sonner": "^1.4.3",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7"
   },
