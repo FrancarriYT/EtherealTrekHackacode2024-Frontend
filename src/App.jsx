@@ -1,27 +1,48 @@
 // src/App.jsx
-
-import TextContent from "./components/TextContent";
-import ContactInfo from "./components/ContactInfo";
-import SpecialRates from "./components/SpecialRates";
 import Home from "./components/Home";
 import "./styles/Tailwind.css";
 import "./styles/NavbarTopSection.css";
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import useSignOut from 'react-auth-kit/hooks/useSignOut';
+import TextContent from "./components/TextContent";
+import ContactInfo from "./components/ContactInfo";
+import SpecialRates from "./components/SpecialRates";
 import AuthProcess from "./components/SignMecanism/AuthProcess";
-import { BrowserRouter as Router, Route, Routes, Link} from "react-router-dom";
-
 
 const App = () => {
+  const signOut = useSignOut();
+
+  useEffect(() => {
+    const handleUnload = () => {
+      const rememberMeCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('rememberMe='));
+      if (!rememberMeCookie || rememberMeCookie.split('=')[1] !== 'true') {
+        signOut();
+        document.cookie = "_auth_refresh=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+    };
+  }, [signOut]);
+
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<AuthProcess />} />
-        <Route path="/" element={
-          <div>
-            <Home />
-            <ContactInfo />
-            <SpecialRates />
-          </div>
-        } />
+        <Route
+          path="/"
+          element={
+            <div>
+              <Home />
+              <ContactInfo />
+              <SpecialRates />
+            </div>
+          }
+        />
       </Routes>
     </Router>
   );

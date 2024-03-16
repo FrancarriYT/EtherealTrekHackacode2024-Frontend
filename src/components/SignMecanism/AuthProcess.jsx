@@ -4,8 +4,9 @@ import { FaGithub, FaGoogle, FaFacebook } from 'react-icons/fa';
 import { searchEmpleado } from '../classes/Empleado/EmpleadoApi';
 import Empleado from '../classes/Empleado/Empleado';
 import { useParams } from 'react-router-dom';
-import { login } from '../classes/Empleado/EmpleadoAuth';
+import { loggedEmpleado, login } from '../classes/Empleado/EmpleadoAuth';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
+
 const LoginForm = () => {
   const { param } = useParams();
   const [empleado, setEmpleado] = useState(new Empleado());
@@ -25,18 +26,40 @@ const LoginForm = () => {
 
   const verifyLogin = async () => {
     if (param !== 'new') {
-      const loginSuccessful = await login(signIn, email, password); // Call login function here
-      if (loginSuccessful) {
-        console.log("Login successful");
-        
-      } else {
-        console.log("Login failed");
+      try {
+        await login(signIn, email, password);
+        const loggedInEmpleado = await loggedEmpleado();
+        setEmpleado(loggedInEmpleado); // Assuming you want to set the logged in empleado
+        console.log("El apellido del usuario es:" , empleado.apellido);
+
+        if (isChecked) {
+          document.cookie = "rememberMe=true; max-age=604800";
+          console.log("Opción de mantener sesión creada. Creando cookie para recordar la sesión.");
+        }
+        else {
+          console.log("Opción de mantener sesión creada es falso. No se creará la cookie para recordar la sesión");
+        }
+        console.log("Logeo con éxito. Redirigiendo al Website.");
+      } catch (error) {
+        if (error.response && error.response.data) {
+          // If the server returns an error message, log it
+          console.error("Server error:", error.response.data.error);
+        } else if (error.message === "Failed to fetch") {
+          // If the request fails due to network issues
+          console.error("Failed to fetch. Please check your internet connection.");
+        } else {
+          // For any other unexpected errors
+          console.error("An unexpected error occurred:", error.message);
+        }
       }
     }
   };
+  
+  
 
   useEffect(() => {
     search();
+    
   }, [param]);
 
   useEffect(() => {
