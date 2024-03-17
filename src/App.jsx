@@ -9,6 +9,7 @@ import TextContent from "./components/TextContent";
 import ContactInfo from "./components/ContactInfo";
 import SpecialRates from "./components/SpecialRates";
 import AuthProcess from "./components/SignMecanism/AuthProcess";
+import { AdminPage } from "./components/administrate/AdminPage";
 
 const App = () => {
   const signOut = useSignOut();
@@ -19,6 +20,7 @@ const App = () => {
       if (!rememberMeCookie || rememberMeCookie.split('=')[1] !== 'true') {
         signOut();
         document.cookie = "_auth_refresh=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        localStorage.removeItem('empleado');
       }
     };
 
@@ -33,6 +35,8 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/login" element={<AuthProcess />} />
+        <Route path="/perfil" element={<AuthProcess />} />
+        <Route path="/modo_administrativo" element={<AdminPage />} />
         <Route
           path="/"
           element={
