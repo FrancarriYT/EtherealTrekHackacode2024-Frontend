@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/Button";
 import {
   Dialog,
@@ -11,6 +11,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { createEmpleado } from '../../classes/Empleado/EmpleadoFunctions'; // Import the createEmpleado function
+import { SelectRol } from "../differentSelects/SelectRol";
+import { SelectCargo } from "../differentSelects/SelectCargo";
 
 export function DialogEmpleado({ isEditing }) {
   const [name, setName] = useState(isEditing ? "Pedro" : "");
@@ -22,20 +25,60 @@ export function DialogEmpleado({ isEditing }) {
   const [pais, setPais] = useState(isEditing ? null : "");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [roles, setRoles] = useState([{ id: 1, role: "" }]);
   const [error, setError] = useState("");
 
-  const handleSubmit = () => {
+  const handleAddRole = () => {
+    setRoles([...roles, { id: roles.length + 1, role: "" }]);
+  };
+
+  const handleRemoveRole = (id) => {
+    setRoles(roles.filter(role => role.id !== id));
+  };
+
+  const handleRoleChange = (id, value) => {
+    setRoles(roles.map(role => (role.id === id ? { ...role, role: value } : role)));
+  };
+
+  const handleSubmit = async () => {
     if (!name || !apellido || !cargo || !celular || !dni || !password) {
       setError("Please fill in all required fields.");
       console.log("Error: Please fill in all required fields.");
       return;
     }
 
-    // Add submission logic here (for now just console.log)
-    console.log("Form submitted successfully!");
-    setError("");
-    // Reset form after successful submission
-    resetForm();
+    try {
+      const selectedRoles = roles.map(role => role.role);
+      const uniqueRoles = [...new Set(selectedRoles)]; // Remove duplicate roles
+      if (selectedRoles.length !== uniqueRoles.length) {
+        setError("Please select different roles for each entry.");
+        return;
+      }
+
+      const response = await createEmpleado({ 
+        name, 
+        apellido, 
+        cargo, 
+        celular, 
+        dni, 
+        password, 
+        roles: roles.map(role => role.role) // Extracting only roles from the roles array
+      });
+      
+      if (response.success) {
+        console.log("Empleado creado exitosamente!");
+        const formData = { name, apellido, cargo, celular, dni, fechaNac, pais, password, roles }; // Form data object
+        const formDataJSON = JSON.stringify(formData, null, 2); // Form data as JSON string
+        console.log(formDataJSON); // Logging the form data as JSON
+        setError("");
+        resetForm();
+      } else {
+        setError("Error: Unable to create employee. Please try again.");
+      }
+    } catch (error) {
+      console.error(error);
+      setError("Error: Unable to create employee. Please try again.");
+    }
   };
 
   const resetForm = () => {
@@ -48,6 +91,7 @@ export function DialogEmpleado({ isEditing }) {
     setPais(null);
     setPassword("");
     setShowPassword(false);
+    setRoles([{ id: 1, role: "" }]);
   };
 
   return (
@@ -55,7 +99,7 @@ export function DialogEmpleado({ isEditing }) {
       <DialogTrigger asChild>
         <Button variant="outline" className="ml-4">{isEditing ? "Editar Empleado" : "Crear Empleado"}</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-white p-6">
+      <DialogContent className="sm:max-w-[475px] bg-white p-6 max-h-[500px] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Creación de empleado</DialogTitle>
           <DialogDescription>Menú de creación de Empleado</DialogDescription>
@@ -87,12 +131,7 @@ export function DialogEmpleado({ isEditing }) {
             <Label htmlFor="cargo" className="text-right">
               Cargo<sup className="text-red-500">*</sup>
             </Label>
-            <Input 
-              id="cargo" 
-              value={cargo} 
-              onChange={(e) => setCargo(e.target.value)} 
-              className="col-span-3" 
-            />
+            <SelectCargo value={cargo} onChange={(e) => setCargo(e.target.value)} />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="celular" className="text-right">
@@ -158,6 +197,30 @@ export function DialogEmpleado({ isEditing }) {
               </button>
             </div>
           </div>
+          {roles.map((role, index) => (
+            <div key={role.id} className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor={`role-${role.id}`} className="text-right">
+                Rol<sup className="text-red-500">*</sup>
+              </Label>
+              <SelectRol
+                id={`role-${role.id}`}
+                value={role.role}
+                onChange={(e) => handleRoleChange(role.id, e.target.value)}
+                className="col-span-2"
+              />
+              {index > 0 && (
+                <button 
+                  className="ml-20 text-red-500 focus:outline-none"
+                  onClick={() => handleRemoveRole(role.id)}
+                >
+                  ❌
+                </button>
+              )}
+            </div>
+          ))}
+          {roles.length < 4 && (
+            <Button variant="outline" onClick={handleAddRole}>Añadir otro rol</Button>
+          )}
         </div>
         <DialogFooter>
           <Button type="submit" onClick={handleSubmit}>Crear empleado</Button>
