@@ -33,3 +33,4 @@ export async function getAllEmpleados() {
         return []; // Return an empty array in case of error
     }
 }
+

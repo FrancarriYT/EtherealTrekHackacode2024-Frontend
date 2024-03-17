@@ -1,11 +1,9 @@
-"use client"
- 
-import * as React from "react"
+import * as React from "react";
 import {
   CaretSortIcon,
   ChevronDownIcon,
   DotsHorizontalIcon,
-} from "@radix-ui/react-icons"
+} from "@radix-ui/react-icons";
 import {
   flexRender,
   getCoreRowModel,
@@ -13,10 +11,10 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
- 
-import { Button } from "@/components/ui/Button"
-import { Checkbox } from "@/components/ui/checkbox"
+} from "@tanstack/react-table";
+
+import { Button } from "@/components/ui/Button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -25,8 +23,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -34,12 +32,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
- import {getAllEmpleados} from "../classes/Empleado/EmpleadoFunctions"
+} from "@/components/ui/table";
+import { getAllEmpleados } from "../classes/Empleado/EmpleadoFunctions";
+import { DialogEmpleado } from "./differentDialogues/DialogEmpleado";
 const data = await getAllEmpleados();
 console.log(data); // Muestra los datos de empleados en la consola
- 
- 
+
+
 export const columns = [
   {
     id: "select",
@@ -96,7 +95,7 @@ export const columns = [
           Email
           <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
   },
@@ -104,24 +103,24 @@ export const columns = [
     accessorKey: "sueldo",
     header: () => <div className="text-right">Sueldo</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("sueldo"))
- 
+      const amount = parseFloat(row.getValue("sueldo"));
+
       // Format the amount as a dollar amount
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
-      }).format(amount)
- 
-      return <div className="text-right font-medium">{formatted}</div>
+      }).format(amount);
+
+      return <div className="text-right font-medium">{formatted}</div>;
     },
   },
-  
+
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original
- 
+      const payment = row.original;
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -130,7 +129,14 @@ export const columns = [
               <DotsHorizontalIcon className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" style={{ backgroundColor: "#ffffff", borderRadius: "4px", boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.1)" }}>
+          <DropdownMenuContent
+            align="end"
+            style={{
+              backgroundColor: "#ffffff",
+              borderRadius: "4px",
+              boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.1)",
+            }}
+          >
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(payment.id)}
@@ -141,19 +147,18 @@ export const columns = [
             <DropdownMenuItem>Ver cliente</DropdownMenuItem>
             <DropdownMenuItem>Ver detalles</DropdownMenuItem>
           </DropdownMenuContent>
-
         </DropdownMenu>
-      )
+      );
     },
   },
-]
- 
+];
+
 export function DataTableDemo() {
-  const [sorting, setSorting] = React.useState([])
-  const [columnFilters, setColumnFilters] = React.useState([])
-  const [columnVisibility, setColumnVisibility] = React.useState({})
-  const [rowSelection, setRowSelection] = React.useState({})
- 
+  const [sorting, setSorting] = React.useState([]);
+  const [columnFilters, setColumnFilters] = React.useState([]);
+  const [columnVisibility, setColumnVisibility] = React.useState({});
+  const [rowSelection, setRowSelection] = React.useState({});
+
   const table = useReactTable({
     data,
     columns,
@@ -171,8 +176,8 @@ export function DataTableDemo() {
       columnVisibility,
       rowSelection,
     },
-  })
- 
+  });
+
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
@@ -184,6 +189,7 @@ export function DataTableDemo() {
           }
           className="max-w-sm"
         />
+        <DialogEmpleado isEditing={false}/>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -206,7 +212,7 @@ export function DataTableDemo() {
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>
-                )
+                );
               })}
           </DropdownMenuContent>
         </DropdownMenu>
@@ -226,7 +232,7 @@ export function DataTableDemo() {
                             header.getContext()
                           )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -286,5 +292,5 @@ export function DataTableDemo() {
         </div>
       </div>
     </div>
-  )
+  );
 }
