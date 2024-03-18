@@ -12,8 +12,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import { Button } from "@/components/ui/Button";
+import { MdOutlineRefresh } from "react-icons/md";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
@@ -36,8 +36,6 @@ import {
 import { getAllEmpleados, onDeleteFunction } from "../classes/Empleado/EmpleadoFunctions";
 import { DialogEmpleado } from "./differentDialogues/DialogEmpleado";
 import RemoveEmpleado from "./differentRemoves.jsx/RemoveEmpleado";
-const data = await getAllEmpleados();
-console.log(data); // Muestra los datos de empleados en la consola
 
 export const columns = [
   {
@@ -144,8 +142,6 @@ export const columns = [
               Copiar pago de ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-          </DropdownMenuItem>
             <DropdownMenuItem>Ver detalles</DropdownMenuItem>
           </DropdownMenuContent>
           <DialogEmpleado isEditing={true} emailEmpleado={row.getValue("email")}/>
@@ -161,6 +157,7 @@ export function DataTableDemo() {
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [data, setData] = React.useState([]);
 
   const table = useReactTable({
     data,
@@ -180,6 +177,20 @@ export function DataTableDemo() {
       rowSelection,
     },
   });
+
+  // Función para recargar la solicitud de empleados
+  const reloadEmpleados = async () => {
+    try {
+      const newData = await getAllEmpleados();
+      setData(newData);
+    } catch (error) {
+      console.error('Error al recargar la lista de empleados:', error);
+    }
+  };
+
+  React.useEffect(() => {
+    reloadEmpleados();
+  }, []); // Se ejecuta solo cuando el componente se monta
 
   return (
     <div className="w-full">
@@ -276,6 +287,14 @@ export function DataTableDemo() {
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
         <div className="space-x-2">
+          {/* Botón para recargar */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={reloadEmpleados} // Llama a la función para recargar empleados
+          >
+            <MdOutlineRefresh className="h-4 w-4"/>  
+          </Button>
           <Button
             variant="outline"
             size="sm"

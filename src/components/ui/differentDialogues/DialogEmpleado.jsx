@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createEmpleado, editEmpleado, getEmpleado } from '../../classes/Empleado/EmpleadoFunctions'; // Import the createEmpleado function
+import { createEmpleado, editEmpleado, getEmpleado } from '../../classes/Empleado/EmpleadoFunctions';
 import { SelectRol } from "../differentSelects/SelectRol";
 import { SelectCargo } from "../differentSelects/SelectCargo";
 import { FaRegEdit } from 'react-icons/fa';
@@ -28,34 +28,44 @@ export function DialogEmpleado({ isEditing, emailEmpleado }) {
     const [pais, setPais] = useState(null);
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-    const [roles, setRoles] = useState([]);
+    const [roles, setRoles] = useState([{ id: 1, role: "" }]);
     const [error, setError] = useState("");
   
     useEffect(() => {
         const fetchData = async () => {
-          try {
-            if (isEditing) {
-              const empleadoData = await getEmpleado(emailEmpleado);
-              if (empleadoData) {
-                setName(empleadoData.nombre);
-                setApellido(empleadoData.apellido);
-                setEmail(empleadoData.email);
-                setCargo(empleadoData.cargo);
-                setCelular(empleadoData.celular);
-                setDni(empleadoData.dni);
-                setFechaNac(empleadoData.fechaNac);
-                setPais(empleadoData.pais);
-                setSueldo(empleadoData.sueldo); // Set sueldo from empleadoData
-                setRoles(empleadoData.roles);
-              }
+            try {
+                if (isEditing) {
+                    const empleadoData = await getEmpleado(emailEmpleado);
+                    if (empleadoData) {
+                        setName(empleadoData.nombre);
+                        setApellido(empleadoData.apellido);
+                        setEmail(empleadoData.email);
+                        setCargo(empleadoData.cargo);
+                        setCelular(empleadoData.celular);
+                        setDni(empleadoData.dni);
+                        setFechaNac(empleadoData.fechaNac);
+                        setPais(empleadoData.pais);
+                        setSueldo(empleadoData.sueldo);
+                        setFechaNac(empleadoData.fechaNac || null);
+                        setPais(empleadoData.pais || null);
+
+                        if (empleadoData.roles) {
+                            setRoles(empleadoData.roles);
+                        } else {
+                            // Si roles está undefined, establecerlo con un valor predeterminado
+                            setRoles([{ id: 1, role: "rol1" }]);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching empleado data:", error);
             }
-          } catch (error) {
-            console.error("Error fetching empleado data:", error);
-          }
         };
     
         fetchData();
-      }, [isEditing, emailEmpleado]);
+    }, [isEditing, emailEmpleado]);
+    
+    
     
   
       const handleAddRole = () => {
@@ -72,70 +82,77 @@ export function DialogEmpleado({ isEditing, emailEmpleado }) {
     };
   
     const handleSubmit = async () => {
-      console.log("User Data:", { name, apellido, cargo, celular, dni, fechaNac, pais, email, password, roles, sueldo }); // Include sueldo in the log
+        console.log("User Data:", { name, apellido, cargo, celular, dni, fechaNac, pais, email, password, roles, sueldo });
     
-      if (!name || !apellido || !cargo || !celular || !dni || !password || !email || !sueldo) { // Check for sueldo
-        setError("Please fill in all required fields.");
-        console.log("Error: Please fill in all required fields.");
-        return;
-      }
-    
-      try {
-        const formData = {
-          nombre: name,
-          apellido,
-          email,
-          cargo,
-          password,
-          celular,
-          dni,
-          sueldo, // Include sueldo in formData
-          enabled: true, // Set enabled to true
-          intentos: 0 // Set intentos to 0
-        }; // Form data object
-    
-        const formDataJSON = JSON.stringify(formData, null, 2); // Form data as JSON string
-        console.log(formDataJSON); // Logging the form data as JSON
-    
-        if (isEditing) {
-          const response = await editEmpleado(formData, emailEmpleado); // Call editEmpleado function
-          if (response.success) {
-            console.log("Empleado editado exitosamente!");
-            setError("");
-            resetForm();
-          } else {
-            setError("Error: Unable to edit employee. Please try again.");
-            console.log("Error: Unable to edit employee. Please try again.");
-          }
-        } else {
-          const response = await createEmpleado(formData); // Send JSON data to createEmpleado
-          if (response.success) {
-            console.log("Empleado creado exitosamente!");
-            setError("");
-            resetForm();
-          } else {
-            setError("Error: Unable to create employee. Please try again.");
-            console.log("Error: Unable to create employee. Please try again.");
-          }
+        if (!name || !apellido || !cargo || !celular || !dni || !password || !email || !sueldo) {
+            setError("Please fill in all required fields.");
+            console.log("Error: Please fill in all required fields.");
+            return;
         }
-      } catch (error) {
-        console.error(error);
-        setError("Error: Unable to create or modify employee. Please try again.");
-        console.log("Error: Unable to create or modify employee. Please try again.");
-      }
+    
+        try {
+            const formData = {
+                nombre: name,
+                apellido,
+                email,
+                cargo,
+                password,
+                celular,
+                dni,
+                sueldo,
+                enabled: true,
+                intentos: 0
+            };
+    
+            // Si se están creando un nuevo empleado y roles está definido, inclúyelos en el objeto formData
+            if (!isEditing && roles) {
+                formData.roles = roles;
+            }
+    
+            const formDataJSON = JSON.stringify(formData, null, 2);
+            console.log(formDataJSON);
+    
+            if (isEditing) {
+                const response = await editEmpleado(formData, emailEmpleado);
+                if (response.success) {
+                    console.log("Empleado editado exitosamente!");
+                    setError("");
+                    resetForm();
+                } else {
+                    setError("Error: Unable to edit employee. Please try again.");
+                    console.log("Error: Unable to edit employee. Please try again.");
+                }
+            } else {
+                const response = await createEmpleado(formData);
+                if (response.success) {
+                    console.log("Empleado creado exitosamente!");
+                    setError("");
+                    resetForm();
+                } else {
+                    setError("Error: Unable to create employee. Please try again.");
+                    console.log("Error: Unable to create employee. Please try again.");
+                }
+            }
+        } catch (error) {
+            console.error(error);
+            setError("Error: Unable to create or modify employee. Please try again.");
+            console.log("Error: Unable to create or modify employee. Please try again.");
+        }
     };
+    
+    
     const resetForm = () => {
       setName("");
       setApellido("");
       setEmail("");
-      setCargo(""); // Reset cargo value
+      setCargo("");
       setCelular("");
       setDni("");
       setFechaNac(null);
       setPais(null);
       setPassword("");
       setShowPassword(false);
-      setSueldo(""); // Reset sueldo value
+      setSueldo("");
       setRoles([{ id: 1, role: "" }]);
     };
   
@@ -270,26 +287,26 @@ export function DialogEmpleado({ isEditing, emailEmpleado }) {
             </div>
           </div>
           {roles && roles.map((role, index) => (
-            <div key={role.id} className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor={`role-${role.id}`} className="text-right">
-                Rol<sup className="text-red-500">*</sup>
-                </Label>
-                <SelectRol
-                id={`role-${role.id}`}
-                value={role.role}
-                onChange={(value) => handleRoleChange(role.id, value)}
-                className="col-span-2"
-                />
-                {index > 0 && (
-                <button 
-                    className="ml-2 text-red-500 focus:outline-none"
-                    onClick={() => handleRemoveRole(role.id)}
-                >
-                    ❌
-                </button>
-                )}
-            </div>
-            ))}
+                <div key={role.id} className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor={`role-${role.id}`} className="text-right">
+                    Rol<sup className="text-red-500">*</sup>
+                    </Label>
+                    <CheckSelectRol
+                    id={`role-${role.id}`}
+                    value={role.role}
+                    onChange={(value) => handleRoleChange(role.id, value)}
+                    className="col-span-2"
+                    />
+                    {index > 0 && (
+                    <button 
+                        className="ml-2 text-red-500 focus:outline-none"
+                        onClick={() => handleRemoveRole(role.id)}
+                    >
+                        ❌
+                    </button>
+                    )}
+                </div>
+                ))}
         </div>
         <DialogFooter>
           <Button type="submit" onClick={handleSubmit}>{isEditing ? "Editar empleado" : "Crear empleado"}</Button>
@@ -301,8 +318,8 @@ export function DialogEmpleado({ isEditing, emailEmpleado }) {
 
 const CheckSelectCargo = ({ value, setCargo }) => {
     const handleChange = (newValue) => {
-      console.log("Selected Cargo:", newValue); // Log selected cargo value
-      setCargo(newValue); // Update the cargo state directly
+      console.log("Selected Cargo:", newValue);
+      setCargo(newValue);
     };
   
     return (
@@ -312,7 +329,7 @@ const CheckSelectCargo = ({ value, setCargo }) => {
 
 const CheckSelectRol = ({ value, onChange }) => {
   const handleChange = (newValue) => {
-    console.log("Selected Role:", newValue); // Log selected role value
+    console.log("Selected Role:", newValue);
     onChange(newValue);
   };
   return (

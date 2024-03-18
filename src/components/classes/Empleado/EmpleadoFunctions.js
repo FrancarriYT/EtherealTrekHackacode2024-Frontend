@@ -150,30 +150,37 @@ export async function onDeleteFunction(email) {
   }
   
   export async function removeEmpleado(email) {
-    const myBearerToken = Cookies.get('_auth');
-    if (!myBearerToken) {
-      console.log('No se encontró token en las cookies.');
-      return { success: false, message: 'No se encontró token en las cookies.' };
-    }
-  
-    console.log('Se obtuvo el Token de acceso por parte de las cookies, obteniendo información para borrar al empleado.');
-  
-    const requestOptions = {
-      method: 'DELETE',
-      headers: {
-        Accept: '*/*',
-        Authorization: `Bearer ${myBearerToken}`
-      },
-      redirect: 'follow'
-    };
-  
     try {
+      const myBearerToken = Cookies.get('_auth');
+      if (!myBearerToken) {
+        console.log('No se encontró token en las cookies.');
+        return { success: false, message: 'No se encontró token en las cookies.' };
+      }
+  
+      console.log('Se obtuvo el Token de acceso por parte de las cookies, obteniendo información para borrar al empleado.');
+  
+      const myHeaders = new Headers();
+      myHeaders.append("Authorization", `Bearer ${myBearerToken}`);
+  
+      const requestOptions = {
+        method: 'DELETE',
+        headers: myHeaders,
+        redirect: 'follow'
+      };
+  
       const response = await fetch(`${baseUrl}usuarios/empleados/${email}`, requestOptions);
+  
+      if (!response.ok) {
+        // Si la respuesta no fue exitosa, arrojamos un error con el código de respuesta
+        throw new Error(`Error eliminando empleado: ${response.status} - ${response.statusText}`);
+      }
+  
       const data = await response.json();
-      console.log('Empleado eliminado de email: ', email);
+      console.log('Empleado eliminado de email:', email);
       return data;
     } catch (error) {
       console.error('Error eliminando empleado:', error);
       return { success: false, message: 'Error al eliminar empleado.' };
     }
   }
+  
