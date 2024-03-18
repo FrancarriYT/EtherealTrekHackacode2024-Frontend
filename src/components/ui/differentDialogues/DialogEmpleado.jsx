@@ -18,14 +18,15 @@ import { SelectCargo } from "../differentSelects/SelectCargo";
 export function DialogEmpleado({ isEditing }) {
   const [name, setName] = useState(isEditing ? "Pedro" : "");
   const [apellido, setApellido] = useState(isEditing ? "Mendez" : "");
-  const [cargo, setCargo] = useState(isEditing ? "VENDEDOR" : "");
+  const [email, setEmail] = useState("");
+  const [cargo, setCargo] = useState(isEditing ? "VENDEDOR" : ""); // Fixed to properly save cargo value
   const [celular, setCelular] = useState(isEditing ? "+12433378021" : "");
   const [dni, setDni] = useState(isEditing ? "89643507" : "");
   const [fechaNac, setFechaNac] = useState(isEditing ? null : "");
   const [pais, setPais] = useState(isEditing ? null : "");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [roles, setRoles] = useState([{ id: 1, role: "" }]);
+  const [roles, setRoles] = useState(isEditing ? [{ id: 1, role: "ROLE_USER" }] : []);
   const [error, setError] = useState("");
 
   const handleAddRole = () => {
@@ -41,50 +42,53 @@ export function DialogEmpleado({ isEditing }) {
   };
 
   const handleSubmit = async () => {
-    if (!name || !apellido || !cargo || !celular || !dni || !password) {
+    console.log("User Data:", { name, apellido, cargo, celular, dni, fechaNac, pais, email, password, roles });
+  
+    if (!name || !apellido || !cargo || !celular || !dni || !password || !email) {
       setError("Please fill in all required fields.");
       console.log("Error: Please fill in all required fields.");
       return;
     }
-
+  
     try {
-      const selectedRoles = roles.map(role => role.role);
-      const uniqueRoles = [...new Set(selectedRoles)]; // Remove duplicate roles
-      if (selectedRoles.length !== uniqueRoles.length) {
-        setError("Please select different roles for each entry.");
-        return;
-      }
-
-      const response = await createEmpleado({ 
-        name, 
-        apellido, 
-        cargo, 
-        celular, 
-        dni, 
-        password, 
-        roles: roles.map(role => role.role) // Extracting only roles from the roles array
-      });
+      const selectedRoles = roles.map(role => ({ id: role.id, nombre: role.role }));
+      const formData = {
+        nombre: name,
+        apellido,
+        email,
+        password,
+        celular,
+        dni,
+        roles: selectedRoles,
+        enabled: true, // Set enabled to true
+        intentos: 0 // Set intentos to 0
+      }; // Form data object
+      
+      const formDataJSON = JSON.stringify(formData, null, 2); // Form data as JSON string
+      console.log(formDataJSON); // Logging the form data as JSON
+      
+      const response = await createEmpleado(formData); // Send JSON data to createEmpleado
       
       if (response.success) {
         console.log("Empleado creado exitosamente!");
-        const formData = { name, apellido, cargo, celular, dni, fechaNac, pais, password, roles }; // Form data object
-        const formDataJSON = JSON.stringify(formData, null, 2); // Form data as JSON string
-        console.log(formDataJSON); // Logging the form data as JSON
         setError("");
         resetForm();
       } else {
         setError("Error: Unable to create employee. Please try again.");
+        console.log("Error: Unable to create employee. Please try again.");
       }
     } catch (error) {
       console.error(error);
       setError("Error: Unable to create employee. Please try again.");
+      console.log("Error: Unable to create employee. Please try again.");
     }
   };
 
   const resetForm = () => {
     setName("");
     setApellido("");
-    setCargo("");
+    setEmail("");
+    setCargo(""); // Reset cargo value
     setCelular("");
     setDni("");
     setFechaNac(null);
@@ -128,10 +132,21 @@ export function DialogEmpleado({ isEditing }) {
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="email" className="text-right">
+              Email<sup className="text-red-500">*</sup>
+            </Label>
+            <Input 
+              id="email" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              className="col-span-3" 
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="cargo" className="text-right">
               Cargo<sup className="text-red-500">*</sup>
             </Label>
-            <SelectCargo value={cargo} onChange={(e) => setCargo(e.target.value)} />
+            <CheckSelectCargo value={cargo} setCargo={setCargo} />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="celular" className="text-right">
@@ -199,25 +214,25 @@ export function DialogEmpleado({ isEditing }) {
           </div>
           {roles.map((role, index) => (
             <div key={role.id} className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor={`role-${role.id}`} className="text-right">
+                <Label htmlFor={`role-${role.id}`} className="text-right">
                 Rol<sup className="text-red-500">*</sup>
-              </Label>
-              <SelectRol
+                </Label>
+                <SelectRol
                 id={`role-${role.id}`}
                 value={role.role}
-                onChange={(e) => handleRoleChange(role.id, e.target.value)}
+                onChange={(value) => handleRoleChange(role.id, value)}
                 className="col-span-2"
-              />
-              {index > 0 && (
+                />
+                {index > 0 && (
                 <button 
-                  className="ml-20 text-red-500 focus:outline-none"
-                  onClick={() => handleRemoveRole(role.id)}
+                    className="ml-20 text-red-500 focus:outline-none"
+                    onClick={() => handleRemoveRole(role.id)}
                 >
-                  ❌
+                    ❌
                 </button>
-              )}
+                )}
             </div>
-          ))}
+            ))}
           {roles.length < 4 && (
             <Button variant="outline" onClick={handleAddRole}>Añadir otro rol</Button>
           )}
@@ -228,4 +243,25 @@ export function DialogEmpleado({ isEditing }) {
       </DialogContent>
     </Dialog>
   )
+}
+
+const CheckSelectCargo = ({ value, setCargo }) => {
+    const handleChange = (newValue) => {
+      console.log("Selected Cargo:", newValue); // Log selected cargo value
+      setCargo(newValue); // Update the cargo state directly
+    };
+  
+    return (
+      <SelectCargo value={value} onChange={handleChange} />
+    );
+  };
+
+const CheckSelectRol = ({ value, onChange }) => {
+  const handleChange = (newValue) => {
+    console.log("Selected Role:", newValue); // Log selected role value
+    onChange(newValue);
+  };
+  return (
+    <SelectRol value={value} onChange={handleChange} />
+  );
 }

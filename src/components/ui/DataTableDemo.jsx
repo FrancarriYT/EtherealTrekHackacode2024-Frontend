@@ -38,7 +38,6 @@ import { DialogEmpleado } from "./differentDialogues/DialogEmpleado";
 const data = await getAllEmpleados();
 console.log(data); // Muestra los datos de empleados en la consola
 
-
 export const columns = [
   {
     id: "select",
@@ -144,7 +143,9 @@ export const columns = [
               Copiar pago de ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Ver cliente</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => <DialogEmpleado isEditing={true}/>}>
+            Editar Cliente
+          </DropdownMenuItem>
             <DropdownMenuItem>Ver detalles</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
