@@ -69,3 +69,33 @@ export async function createEmpleado(empleadoData) {
         return { success: false, message: 'Error al crear el empleado. Inténtelo de nuevo más tarde.' };
     }
 }
+
+
+export async function getEmpleado(email) {
+    const myBearerToken = Cookies.get('_auth');
+    if (!myBearerToken) {
+        console.log('No token found in the cookie.');
+        return { success: false, message: 'No token found in the cookie.' };
+    }
+
+    console.log("Se obtuvo el Token de acceso por parte de las cookies, obteniendo información del empleado.");
+
+    const requestOptions = {
+        method: "GET",
+        headers: {
+            "Accept": "*/*",
+            "Authorization": `Bearer ${myBearerToken}`
+        },
+        redirect: "follow"
+    };
+
+    try {
+        const response = await fetch(`${baseUrl}usuarios/empleados/${email}`, requestOptions);
+        const data = await response.json();
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.error("Error fetching empleado data:", error);
+        return { success: false, message: 'Error fetching empleado data.' };
+    }
+}

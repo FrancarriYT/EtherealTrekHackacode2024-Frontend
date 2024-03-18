@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/Button";
 import {
   Dialog,
@@ -11,24 +11,50 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createEmpleado } from '../../classes/Empleado/EmpleadoFunctions'; // Import the createEmpleado function
+import { createEmpleado, getEmpleado } from '../../classes/Empleado/EmpleadoFunctions'; // Import the createEmpleado function
 import { SelectRol } from "../differentSelects/SelectRol";
 import { SelectCargo } from "../differentSelects/SelectCargo";
 import { FaRegEdit } from 'react-icons/fa';
 
-export function DialogEmpleado({ isEditing }) {
-  const [name, setName] = useState(isEditing ? "Pedro" : "");
-  const [apellido, setApellido] = useState(isEditing ? "Mendez" : "");
-  const [email, setEmail] = useState("");
-  const [cargo, setCargo] = useState(isEditing ? "VENDEDOR" : ""); // Fixed to properly save cargo value
-  const [celular, setCelular] = useState(isEditing ? "+12433378021" : "");
-  const [dni, setDni] = useState(isEditing ? "89643507" : "");
-  const [fechaNac, setFechaNac] = useState(isEditing ? null : "");
-  const [pais, setPais] = useState(isEditing ? null : "");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [roles, setRoles] = useState(isEditing ? [{ id: 1, role: "ROLE_USER" }] : []);
-  const [error, setError] = useState("");
+export function DialogEmpleado({ isEditing, emailEmpleado }) {
+    const [name, setName] = useState("");
+    const [apellido, setApellido] = useState("");
+    const [email, setEmail] = useState("");
+    const [cargo, setCargo] = useState("");
+    const [celular, setCelular] = useState("");
+    const [dni, setDni] = useState("");
+    const [fechaNac, setFechaNac] = useState(null);
+    const [pais, setPais] = useState(null);
+    const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [roles, setRoles] = useState([]);
+    const [error, setError] = useState("");
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          if (isEditing) {
+            const empleadoData = await getEmpleado(emailEmpleado);
+            if (empleadoData) {
+              setName(empleadoData.nombre);
+              setApellido(empleadoData.apellido);
+              setEmail(empleadoData.email);
+              setCargo(empleadoData.cargo);
+              setCelular(empleadoData.celular);
+              setDni(empleadoData.dni);
+              setFechaNac(empleadoData.fechaNac);
+              setPais(empleadoData.pais);
+              setRoles(empleadoData.roles);
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching empleado data:", error);
+        }
+      };
+  
+      fetchData();
+    }, [isEditing, emailEmpleado]);
+  
 
   const handleAddRole = () => {
     setRoles([...roles, { id: roles.length + 1, role: "" }]);
@@ -111,8 +137,8 @@ export function DialogEmpleado({ isEditing }) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[475px] bg-white p-6 max-h-[500px] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Creación de empleado</DialogTitle>
-          <DialogDescription>Menú de creación de Empleado</DialogDescription>
+          <DialogTitle>{isEditing ?"Edición de empleados" : "Creación de empleado"}</DialogTitle>
+          <DialogDescription>{isEditing ?"Menú de edición de empleados" : "Menú de creación de empleados"}</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
@@ -218,7 +244,7 @@ export function DialogEmpleado({ isEditing }) {
               </button>
             </div>
           </div>
-          {roles.map((role, index) => (
+          {roles && roles.map((role, index) => (
             <div key={role.id} className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor={`role-${role.id}`} className="text-right">
                 Rol<sup className="text-red-500">*</sup>
@@ -231,7 +257,7 @@ export function DialogEmpleado({ isEditing }) {
                 />
                 {index > 0 && (
                 <button 
-                    className="ml-20 text-red-500 focus:outline-none"
+                    className="ml-2 text-red-500 focus:outline-none"
                     onClick={() => handleRemoveRole(role.id)}
                 >
                     ❌
@@ -239,12 +265,9 @@ export function DialogEmpleado({ isEditing }) {
                 )}
             </div>
             ))}
-          {roles.length < 4 && (
-            <Button variant="outline" onClick={handleAddRole}>Añadir otro rol</Button>
-          )}
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={handleSubmit}>Crear empleado</Button>
+          <Button type="submit" onClick={handleSubmit}>{isEditing ? "Editar empleado" : "Crear empleado"}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

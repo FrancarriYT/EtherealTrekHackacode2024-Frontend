@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/table";
 import { getAllEmpleados } from "../classes/Empleado/EmpleadoFunctions";
 import { DialogEmpleado } from "./differentDialogues/DialogEmpleado";
+import RemoveEmpleado from "./differentRemoves.jsx/RemoveEmpleado";
 const data = await getAllEmpleados();
 console.log(data); // Muestra los datos de empleados en la consola
 
@@ -148,7 +149,8 @@ export const columns = [
           </DropdownMenuItem>
             <DropdownMenuItem>Ver detalles</DropdownMenuItem>
           </DropdownMenuContent>
-          <DialogEmpleado isEditing={true}/>
+          <DialogEmpleado isEditing={true} emailEmpleado={row.getValue("email")}/>
+          <RemoveEmpleado/>
         </DropdownMenu>
       );
     },
@@ -184,7 +186,7 @@ export function DataTableDemo() {
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
+          placeholder="Filtrar por emails..."
           value={(table.getColumn("email")?.getFilterValue()) ?? ""}
           onChange={(event) =>
             table.getColumn("email")?.setFilterValue(event.target.value)
