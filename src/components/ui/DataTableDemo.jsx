@@ -33,12 +33,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getAllEmpleados } from "../classes/Empleado/EmpleadoFunctions";
+import { getAllEmpleados, onDeleteFunction } from "../classes/Empleado/EmpleadoFunctions";
 import { DialogEmpleado } from "./differentDialogues/DialogEmpleado";
 import RemoveEmpleado from "./differentRemoves.jsx/RemoveEmpleado";
 const data = await getAllEmpleados();
 console.log(data); // Muestra los datos de empleados en la consola
-
 
 export const columns = [
   {
@@ -150,7 +149,7 @@ export const columns = [
             <DropdownMenuItem>Ver detalles</DropdownMenuItem>
           </DropdownMenuContent>
           <DialogEmpleado isEditing={true} emailEmpleado={row.getValue("email")}/>
-          <RemoveEmpleado/>
+          <RemoveEmpleado email={row.getValue("email")} onDelete={onDeleteFunction} />
         </DropdownMenu>
       );
     },
