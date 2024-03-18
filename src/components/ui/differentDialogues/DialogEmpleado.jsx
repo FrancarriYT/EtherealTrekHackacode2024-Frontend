@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { createEmpleado } from '../../classes/Empleado/EmpleadoFunctions'; // Import the createEmpleado function
 import { SelectRol } from "../differentSelects/SelectRol";
 import { SelectCargo } from "../differentSelects/SelectCargo";
+import { FaRegEdit } from 'react-icons/fa';
 
 export function DialogEmpleado({ isEditing }) {
   const [name, setName] = useState(isEditing ? "Pedro" : "");
@@ -101,7 +102,12 @@ export function DialogEmpleado({ isEditing }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="ml-4">{isEditing ? "Editar Empleado" : "Crear Empleado"}</Button>
+        <Button variant="outline" className="ml-4 relative">
+          {isEditing ? 
+            <FaRegEdit className='text-cyan-800 hover:bg-cyan-50 transition-colors duration-300' style={{ fontSize: "1.5rem" }}/> : 
+            "Crear Empleado"
+          }
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[475px] bg-white p-6 max-h-[500px] overflow-y-auto">
         <DialogHeader>
