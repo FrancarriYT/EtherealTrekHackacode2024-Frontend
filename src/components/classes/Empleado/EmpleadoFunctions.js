@@ -75,9 +75,9 @@ export async function editEmpleado(empleadoData, email) {
       console.log('No token found in the cookie.');
       return { success: false, message: 'No token found in the cookie.' };
     }
-  
+    
     console.log("Se obtuvo el Token de acceso por parte de las cookies, ejecutando importe de información de empleado.");
-  
+    console.log("ID: ", email);
     const requestOptions = {
       method: "PUT",
       headers: {
@@ -88,8 +88,9 @@ export async function editEmpleado(empleadoData, email) {
       body: JSON.stringify(empleadoData),
       redirect: "follow"
     };
-  
+
     try {
+
       const response = await fetch(baseUrl + `usuarios/empleados/${email}`, requestOptions); // Replace "<string>" with the employee ID
       const result = await response.json();
   
@@ -135,19 +136,15 @@ export async function getEmpleado(email) {
 }
 
 export async function onDeleteFunction(email) {
-    try {
-      const response = await removeEmpleado(email);
-      console.log(response);
-      // Aquí puedes manejar la respuesta según tus necesidades
-      if (response.success) {
-        console.log('Empleado eliminado exitosamente.');
-      } else {
-        console.log('Error al eliminar empleado:', response.message);
-      }
-    } catch (error) {
-      console.error('Error eliminando empleado:', error);
-    }
+  try {
+    await removeEmpleado(email);
+    console.log('Empleado eliminado exitosamente.');
+  } catch (error) {
+    console.error('Error eliminando empleado:', error);
   }
+}
+
+
   
   export async function removeEmpleado(email) {
     try {
@@ -183,4 +180,6 @@ export async function onDeleteFunction(email) {
       return { success: false, message: 'Error al eliminar empleado.' };
     }
   }
+  
+
   

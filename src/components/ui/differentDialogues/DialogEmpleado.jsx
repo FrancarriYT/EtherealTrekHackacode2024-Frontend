@@ -16,7 +16,7 @@ import { SelectRol } from "../differentSelects/SelectRol";
 import { SelectCargo } from "../differentSelects/SelectCargo";
 import { FaRegEdit } from 'react-icons/fa';
 
-export function DialogEmpleado({ isEditing, emailEmpleado }) {
+export function DialogEmpleado({ isEditing, idEmpleado }) {
     const [name, setName] = useState("");
     const [apellido, setApellido] = useState("");
     const [email, setEmail] = useState("");
@@ -35,7 +35,7 @@ export function DialogEmpleado({ isEditing, emailEmpleado }) {
         const fetchData = async () => {
             try {
                 if (isEditing) {
-                    const empleadoData = await getEmpleado(emailEmpleado);
+                    const empleadoData = await getEmpleado(idEmpleado);
                     if (empleadoData) {
                         setName(empleadoData.nombre);
                         setApellido(empleadoData.apellido);
@@ -63,7 +63,7 @@ export function DialogEmpleado({ isEditing, emailEmpleado }) {
         };
     
         fetchData();
-    }, [isEditing, emailEmpleado]);
+    }, [isEditing, idEmpleado]);
     
     
     
@@ -113,7 +113,7 @@ export function DialogEmpleado({ isEditing, emailEmpleado }) {
             console.log(formDataJSON);
     
             if (isEditing) {
-                const response = await editEmpleado(formData, emailEmpleado);
+                const response = await editEmpleado(formData, idEmpleado);
                 if (response.success) {
                     console.log("Empleado editado exitosamente!");
                     setError("");

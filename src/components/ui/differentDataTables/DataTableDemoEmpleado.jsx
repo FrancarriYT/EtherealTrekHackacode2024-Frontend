@@ -33,9 +33,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getAllEmpleados, onDeleteFunction } from "../classes/Empleado/EmpleadoFunctions";
-import { DialogEmpleado } from "./differentDialogues/DialogEmpleado";
-import RemoveEmpleado from "./differentRemoves.jsx/RemoveEmpleado";
+import { getAllEmpleados, onDeleteFunction } from "../../classes/Empleado/EmpleadoFunctions";
+import { DialogEmpleado } from "../differentDialogues/DialogEmpleado";
+import RemoveEmpleado from "../differentRemoves/RemoveEmpleado";
 
 export const columns = [
   {
@@ -61,13 +61,19 @@ export const columns = [
     enableHiding: false,
   },
   {
+    accessorKey: "id",
+    header: "ID",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("id").substring(0, 7)}</div>
+    ),
+  },
+  {
     accessorKey: "nombre",
     header: "Nombre",
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("nombre")}</div>
     ),
   },
-
   {
     accessorKey: "apellido",
     header: "Apellido",
@@ -117,7 +123,7 @@ export const columns = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const empleadoId = row.getValue("id"); // Obtener el ID del empleado
 
       return (
         <DropdownMenu>
@@ -137,22 +143,22 @@ export const columns = [
           >
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(empleadoId)} // Pasar el ID del empleado en el portapapeles del usuario
             >
-              Copiar pago de ID
+              Copiar ID de Empleado
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Ver detalles</DropdownMenuItem>
           </DropdownMenuContent>
-          <DialogEmpleado isEditing={true} emailEmpleado={row.getValue("email")}/>
-          <RemoveEmpleado email={row.getValue("email")} onDelete={onDeleteFunction} />
+          <DialogEmpleado isEditing={true} idEmpleado={empleadoId}/> {/* Pasar el ID del empleado para editarlo*/}
+          <RemoveEmpleado email={row.getValue("email")} onDelete={onDeleteFunction} /> {/*Función para borrar el empleado */}
         </DropdownMenu>
       );
     },
   },
 ];
 
-export function DataTableDemo() {
+export function DataTableDemoEmpleado() {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
@@ -204,6 +210,16 @@ export function DataTableDemo() {
           className="max-w-sm"
         />
         <DialogEmpleado isEditing={false}/>
+          {/* Botón para recargar */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={reloadEmpleados}
+            className="ml-4 relative" 
+            style={{ padding: "0.30rem", height: "h-2" }}
+          >
+            <MdOutlineRefresh className="h-6 w-6" /> 
+          </Button>      
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -287,21 +303,14 @@ export function DataTableDemo() {
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
         <div className="space-x-2">
-          {/* Botón para recargar */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={reloadEmpleados} // Llama a la función para recargar empleados
-          >
-            <MdOutlineRefresh className="h-4 w-4"/>  
-          </Button>
+
           <Button
             variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Previous
+            Anterior
           </Button>
           <Button
             variant="outline"
@@ -309,7 +318,7 @@ export function DataTableDemo() {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next
+            Siguiente
           </Button>
         </div>
       </div>

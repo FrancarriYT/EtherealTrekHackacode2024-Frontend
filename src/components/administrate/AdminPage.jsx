@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { NavbarTopSection } from "../navbar/NavbarTopSection";
 import { CommandAdmin } from "../ui/CommandAdmin";
-import { DataTableDemo } from "../ui/DataTableDemo";
+import { DataTableDemoEmpleado } from "../ui/differentDataTables/DataTableDemoEmpleado";
 
 // Components to be rendered inside AdminBox based on selected option
-const EmpleadosComponent = () => <DataTableDemo />;
+const EmpleadosComponent = () => <DataTableDemoEmpleado />;
 const ClientesComponent = () => <div>Contenido de Clientes</div>;
 const RolesComponent = () => <div>Contenido de Roles</div>;
 const ActividadesComponent = () => <div>Contenido de Actividades</div>;
