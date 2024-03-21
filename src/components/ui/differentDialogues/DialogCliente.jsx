@@ -68,9 +68,9 @@ export function DialogCliente({ isEditing, idCliente }) {
 
         // Bueno, si se crea un cliente, hay ciertos valores que no se pueden asignar en primera instancia.
         // Por ejemplo, no permitir asignar valores a ciertos campos como pais, dirección y fecha de Nacimiento.
-        setPais("No se puede asignar esta variable al momento de creación del cliente");
-        setDireccion("No se puede asignar esta variable al momento de creación del cliente");
-        setFechaNac("No se puede asignar esta variable al momento de creación del cliente");
+        setPais("No disponible");
+        setDireccion("No disponible");
+        setFechaNac("No disponible");
     }
   
     try {
@@ -217,22 +217,38 @@ export function DialogCliente({ isEditing, idCliente }) {
             <Label htmlFor="continente" className="text-right">
               Continente
             </Label>
-            <SelectContinents 
-              value={selectedContinent} 
-              onChange={setSelectedContinent} // Actualiza el estado del continente seleccionado
-              className="col-span-3" 
-            />
+            {isEditing ? (
+              <SelectContinents 
+                value={selectedContinent} 
+                onChange={setSelectedContinent} // Actualiza el estado del continente seleccionado
+                className="col-span-3" 
+              />
+            ) : (
+              <Input 
+                value="Solo disponible en modificación" 
+                className="col-span-3" 
+                disabled
+              />
+            )}
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="pais" className="text-right">
               País
             </Label>
-            <SelectPaises 
-              continente={selectedContinent} // Pasa el continente seleccionado al componente SelectPaises
-              value={pais} 
-              onChange={setPais} 
-              className="col-span-3" 
-            />
+            {isEditing ? (
+              <SelectPaises 
+                continente={selectedContinent} // Pasa el continente seleccionado al componente SelectPaises
+                value={pais} 
+                onChange={setPais} 
+                className="col-span-3" 
+              />
+            ) : (
+              <Input 
+                value="Solo disponible en modificación" 
+                className="col-span-3" 
+                disabled
+              />
+            )}
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="direccion" className="text-right">

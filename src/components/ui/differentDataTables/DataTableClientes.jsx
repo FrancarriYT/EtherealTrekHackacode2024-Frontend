@@ -89,6 +89,13 @@ export const columns = [
       ),
     },
     {
+        accessorKey: "pais",
+        header: "País",
+        cell: ({ row }) => (
+          <div className="capitalize">{row.getValue("pais")}</div>
+        ),
+      },
+    {
       accessorKey: "email",
       header: ({ column }) => {
         return (
