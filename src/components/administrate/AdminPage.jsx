@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import { NavbarTopSection } from "../navbar/NavbarTopSection";
 import { CommandAdmin } from "../ui/CommandAdmin";
 import { DataTableDemoEmpleado } from "../ui/differentDataTables/DataTableDemoEmpleado";
+import { DataTableDemoServicio } from "../ui/differentDataTables/DataTableServicios";
+import { DataTablePaquete } from "../ui/differentDataTables/DataTablePaquetes";
 
 // Components to be rendered inside AdminBox based on selected option
 const EmpleadosComponent = () => <DataTableDemoEmpleado />;
 const ClientesComponent = () => <div>Contenido de Clientes</div>;
 const RolesComponent = () => <div>Contenido de Roles</div>;
-const ActividadesComponent = () => <div>Contenido de Actividades</div>;
-const PaquetesComponent = () => <div>Contenido de Paquetes</div>;
+const ServiciosComponent = () => <DataTableDemoServicio/>;
+const PaquetesComponent = () => <DataTablePaquete/>;
 const SettingsComponent = () => <div>Contenido de Settings</div>;
 
 export const AdminBox = ({ selectedOption }) => {
@@ -21,8 +23,8 @@ export const AdminBox = ({ selectedOption }) => {
         return <ClientesComponent />;
       case "Roles":
         return <RolesComponent />;
-      case "Actividades":
-        return <ActividadesComponent />;
+      case "Servicios":
+        return <ServiciosComponent />;
       case "Paquetes":
         return <PaquetesComponent />;
       case "Settings":

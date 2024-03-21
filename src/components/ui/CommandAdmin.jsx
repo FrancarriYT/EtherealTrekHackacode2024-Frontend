@@ -61,9 +61,9 @@ import {
             </CommandGroup>
             <CommandSeparator />
             <CommandGroup heading="Settings">
-              <CommandItem onSelect={() => handleOptionSelect("Actividades")}>
+              <CommandItem onSelect={() => handleOptionSelect("Servicios")}>
                 <PersonIcon className="mr-2 h-4 w-4" />
-                <span>Actividades</span>
+                <span>Servicios</span>
                 <CommandShortcut>⌘P</CommandShortcut>
               </CommandItem>
               <CommandItem onSelect={() => handleOptionSelect("Paquetes")}>

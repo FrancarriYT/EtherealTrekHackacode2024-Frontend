@@ -15,6 +15,7 @@ import { createEmpleado, editEmpleado, getEmpleado } from '../../classes/Emplead
 import { SelectRol } from "../differentSelects/SelectRol";
 import { SelectCargo } from "../differentSelects/SelectCargo";
 import { FaRegEdit } from 'react-icons/fa';
+import { Toaster, toast } from 'sonner';
 
 export function DialogEmpleado({ isEditing, idEmpleado }) {
     const [name, setName] = useState("");
@@ -32,129 +33,116 @@ export function DialogEmpleado({ isEditing, idEmpleado }) {
     const [error, setError] = useState("");
   
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                if (isEditing) {
-                    const empleadoData = await getEmpleado(idEmpleado);
-                    if (empleadoData) {
-                        setName(empleadoData.nombre);
-                        setApellido(empleadoData.apellido);
-                        setEmail(empleadoData.email);
-                        setCargo(empleadoData.cargo);
-                        setCelular(empleadoData.celular);
-                        setDni(empleadoData.dni);
-                        setFechaNac(empleadoData.fechaNac);
-                        setPais(empleadoData.pais);
-                        setSueldo(empleadoData.sueldo);
-                        setFechaNac(empleadoData.fechaNac || null);
-                        setPais(empleadoData.pais || null);
+      const fetchData = async () => {
+          try {
+              if (isEditing) {
+                  const empleadoData = await getEmpleado(idEmpleado);
+                  if (empleadoData) {
+                      setName(empleadoData.nombre);
+                      setApellido(empleadoData.apellido);
+                      setEmail(empleadoData.email);
+                      setCargo(empleadoData.cargo);
+                      setCelular(empleadoData.celular);
+                      setDni(empleadoData.dni);
+                      setFechaNac(empleadoData.fechaNac);
+                      setPais(empleadoData.pais);
+                      setSueldo(empleadoData.sueldo);
+                      setFechaNac(empleadoData.fechaNac || null);
+                      setPais(empleadoData.pais || null);
 
-                        if (empleadoData.roles) {
-                            setRoles(empleadoData.roles);
-                        } else {
-                            // Si roles está undefined, establecerlo con un valor predeterminado
-                            setRoles([{ id: 1, role: "rol1" }]);
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error("Error fetching empleado data:", error);
-            }
-        };
-    
-        fetchData();
-    }, [isEditing, idEmpleado]);
-    
-    
-    
+                      if (empleadoData.roles) {
+                          setRoles(empleadoData.roles);
+                      } else {
+                          // Si roles está undefined, establecerlo con un valor predeterminado
+                          setRoles([{ id: 1, role: "rol1" }]);
+                      }
+                  }
+              }
+          } catch (error) {
+              console.error("Error fetching empleado data:", error);
+          }
+      };
+
+      fetchData();
+  }, [isEditing, idEmpleado]);
+
+  const handleAddRole = () => {
+    const newRole = { id: roles.length + 1, role: "" };
+    setRoles([...roles, newRole]);
+};
+
+const handleRemoveRole = (id) => {
+    setRoles(roles.filter(role => role.id !== id));
+};
+
+const handleRoleChange = (id, value) => {
+    setRoles(roles.map(role => (role.id === id ? { ...role, role: value } : role)));
+};
+
+const handleSubmit = async () => {
+  if (!name || !apellido || !cargo || !celular || !dni || !password || !email || !sueldo) {
+      setError("Please fill in all required fields.");
+      toast.error("Please fill in all required fields.");
+      return;
+  }
+
+  try {
+      const formData = {
+          nombre: name,
+          apellido,
+          email,
+          cargo,
+          password,
+          celular,
+          dni,
+          sueldo,
+          enabled: true,
+          intentos: 0
+      };
+
+      if (!isEditing && roles) {
+          formData.roles = roles;
+      }
+
+      const formDataJSON = JSON.stringify(formData, null, 2);
+
+      const promise = isEditing ? editEmpleado(formData, idEmpleado) : createEmpleado(formData);
+
+      console.log("Submitting form data...");
+
+      const response = await promise;
+
+      if (response.success) {
+          resetForm();
+          toast.success(isEditing ? 'Empleado editado exitosamente!' : 'Empleado creado exitosamente!');
+      } else {
+          setError(response.error);
+          toast.error("error",response.error);
+      }
+  } catch (error) {
+      setError("Error: No se pudo completar la acción.");
+      console.error(error);
+      toast.error("Error: No se pudo completar la acción.");
+  }
+};
   
-      const handleAddRole = () => {
-          const newRole = { id: roles.length + 1, role: "" };
-          setRoles([...roles, newRole]);
-        };
   
-    const handleRemoveRole = (id) => {
-      setRoles(roles.filter(role => role.id !== id));
-    };
-  
-    const handleRoleChange = (id, value) => {
-      setRoles(roles.map(role => (role.id === id ? { ...role, role: value } : role)));
-    };
-  
-    const handleSubmit = async () => {
-        console.log("User Data:", { name, apellido, cargo, celular, dni, fechaNac, pais, email, password, roles, sueldo });
+  const resetForm = () => {
+    setName("");
+    setApellido("");
+    setEmail("");
+    setCargo("");
+    setCelular("");
+    setDni("");
+    setFechaNac(null);
+    setPais(null);
+    setPassword("");
+    setShowPassword(false);
+    setSueldo("");
+    setRoles([{ id: 1, role: "" }]);
+  };
     
-        if (!name || !apellido || !cargo || !celular || !dni || !password || !email || !sueldo) {
-            setError("Please fill in all required fields.");
-            console.log("Error: Please fill in all required fields.");
-            return;
-        }
-    
-        try {
-            const formData = {
-                nombre: name,
-                apellido,
-                email,
-                cargo,
-                password,
-                celular,
-                dni,
-                sueldo,
-                enabled: true,
-                intentos: 0
-            };
-    
-            // Si se están creando un nuevo empleado y roles está definido, inclúyelos en el objeto formData
-            if (!isEditing && roles) {
-                formData.roles = roles;
-            }
-    
-            const formDataJSON = JSON.stringify(formData, null, 2);
-            console.log(formDataJSON);
-    
-            if (isEditing) {
-                const response = await editEmpleado(formData, idEmpleado);
-                if (response.success) {
-                    console.log("Empleado editado exitosamente!");
-                    setError("");
-                    resetForm();
-                } else {
-                    setError("Error: Unable to edit employee. Please try again.");
-                    console.log("Error: Unable to edit employee. Please try again.");
-                }
-            } else {
-                const response = await createEmpleado(formData);
-                if (response.success) {
-                    console.log("Empleado creado exitosamente!");
-                    setError("");
-                    resetForm();
-                } else {
-                    setError("Error: Unable to create employee. Please try again.");
-                    console.log("Error: Unable to create employee. Please try again.");
-                }
-            }
-        } catch (error) {
-            console.error(error);
-            setError("Error: Unable to create or modify employee. Please try again.");
-            console.log("Error: Unable to create or modify employee. Please try again.");
-        }
-    };
-    
-    
-    const resetForm = () => {
-      setName("");
-      setApellido("");
-      setEmail("");
-      setCargo("");
-      setCelular("");
-      setDni("");
-      setFechaNac(null);
-      setPais(null);
-      setPassword("");
-      setShowPassword(false);
-      setSueldo("");
-      setRoles([{ id: 1, role: "" }]);
-    };
+
   
   return (
     <Dialog>
@@ -310,8 +298,21 @@ export function DialogEmpleado({ isEditing, idEmpleado }) {
         </div>
         <DialogFooter>
           <Button type="submit" onClick={handleSubmit}>{isEditing ? "Editar empleado" : "Crear empleado"}</Button>
+          
         </DialogFooter>
+
       </DialogContent>
+      <Toaster
+          toastOptions={{
+            style: {
+              fontSize: '1.5rem', // Increase font size
+              padding: '1rem 1rem', // Increase padding
+            },
+          }}
+          richColors
+          closeButton
+          expand={true}
+        />
     </Dialog>
   )
 }
