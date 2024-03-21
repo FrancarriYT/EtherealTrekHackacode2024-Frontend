@@ -4,10 +4,11 @@ import { CommandAdmin } from "../ui/CommandAdmin";
 import { DataTableDemoEmpleado } from "../ui/differentDataTables/DataTableDemoEmpleado";
 import { DataTableDemoServicio } from "../ui/differentDataTables/DataTableServicios";
 import { DataTablePaquete } from "../ui/differentDataTables/DataTablePaquetes";
+import { DataTableCliente } from "../ui/differentDataTables/DataTableClientes";
 
 // Components to be rendered inside AdminBox based on selected option
 const EmpleadosComponent = () => <DataTableDemoEmpleado />;
-const ClientesComponent = () => <div>Contenido de Clientes</div>;
+const ClientesComponent = () => <DataTableCliente/>;
 const RolesComponent = () => <div>Contenido de Roles</div>;
 const ServiciosComponent = () => <DataTableDemoServicio/>;
 const PaquetesComponent = () => <DataTablePaquete/>;
