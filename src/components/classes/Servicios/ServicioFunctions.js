@@ -180,7 +180,7 @@ export async function onDeleteFunction(email) {
 
 
   
-  export async function removeServicio(email) {
+  export async function removeServicio(idServicio) {
     try {
       const myBearerToken = Cookies.get('_auth');
       if (!myBearerToken) {
@@ -199,7 +199,7 @@ export async function onDeleteFunction(email) {
         redirect: 'follow'
       };
   
-      const response = await fetch(`${baseUrl}/servicios/${email}`, requestOptions);
+      const response = await fetch(`${baseUrl}/servicios/${idServicio}`, requestOptions);
   
       if (!response.ok) {
         // Si la respuesta no fue exitosa, arrojamos un error con el código de respuesta
@@ -207,7 +207,7 @@ export async function onDeleteFunction(email) {
       }
   
       const data = await response.json();
-      console.log('Servicio eliminado de email:', email);
+      console.log('Servicio eliminado de IdServicio:', idServicio );
       return data;
     } catch (error) {
       console.error('Error eliminando servicio:', error);

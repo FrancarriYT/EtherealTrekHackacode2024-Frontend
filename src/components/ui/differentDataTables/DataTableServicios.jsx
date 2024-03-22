@@ -34,8 +34,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getAllServicios, onDeleteFunction } from "../../classes/Servicios/ServicioFunctions";
-import RemoveEmpleado from "../differentRemoves/RemoveEmpleado";
 import { DialogServicio } from "../differentDialogues/DialogServicio";
+import RemoveServicio from "../differentRemoves/RemoveServicio";
+import { DialogGaleria } from "../differentDialogues/DialogGaleria";
 
 export const columns = [
   {
@@ -122,6 +123,7 @@ export const columns = [
               backgroundColor: "#ffffff",
               borderRadius: "4px",
               boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.1)",
+              position: "relative", // Ajuste para posicionar correctamente los botones
             }}
           >
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
@@ -133,8 +135,12 @@ export const columns = [
             <DropdownMenuSeparator />
             <DropdownMenuItem>Ver detalles</DropdownMenuItem>
           </DropdownMenuContent>
-          <DialogServicio isEditing={true} idServicio={servicioId}/> 
-          {/* <RemoveEmpleado email={row.getValue("email")} onDelete={onDeleteFunction} /> */}
+          {/* Botones fuera del menú desplegable */}
+          <div style={{ display: 'flex'}}>
+            <DialogServicio isEditing={true} idServicio={servicioId}/> 
+            <DialogGaleria idServicio={servicioId}/>
+            <RemoveServicio idServicio={servicioId} onDelete={onDeleteFunction} />
+          </div>
         </DropdownMenu>
       );
     },
@@ -169,13 +175,13 @@ export function DataTableDemoServicio() {
 
   const reloadServicios = async () => {
     try {
-      const newData = await getAllServicios();
-      setData(newData);
+      const dataWithImages = await getAllServicios();
+      setData(dataWithImages);
     } catch (error) {
       console.error('Error al recargar la lista de servicios:', error);
     }
   };
-
+  
   React.useEffect(() => {
     reloadServicios();
   }, []);
@@ -305,3 +311,4 @@ export function DataTableDemoServicio() {
     </div>
   );
 }
+
