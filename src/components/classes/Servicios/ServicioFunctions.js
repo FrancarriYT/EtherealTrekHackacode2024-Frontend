@@ -35,6 +35,38 @@ export async function getAllServicios() {
         return []; // Retornar Array vacio en caso de error.
     }
 }
+export async function filtrarServiciosPorTipo(tipo) {
+  const myBearerToken = Cookies.get('_auth'); // Recuperar información del Token
+  if (!myBearerToken) {
+      console.log('No token found in the cookie.');
+      return []; // Devuelve un array vacío si no se encuentra el Token.
+  }
+
+  console.log("Se obtuvo el Token de acceso por parte de las cookies, filtrando información de servicio por tipo.");
+
+  const requestOptions = {
+      method: "GET",
+      redirect: "follow",
+      headers: {
+          "Authorization": `Bearer ${myBearerToken}` 
+      }
+  };
+
+  try {
+      const response = await fetch(`${baseUrl}/servicios/filtrar/tipo-de-servicio/${tipo}`, requestOptions);
+      if (!response.ok) {
+          throw new Error('Hubo un problema al obtener los datos de servicios filtrados por tipo.');
+      }
+      
+      const result = await response.json(); // Parsear la respuesta como JSON
+      console.log(result); // Loguea en la consola el resultado de los datos filtrados por tipo
+      
+      return result; // Retorna los datos filtrados por tipo para uso posterior
+  } catch (error) {
+      console.error(error);
+      return []; // Retornar Array vacío en caso de error.
+  }
+}
 
 export async function createServicio(servicioData) {
     const myBearerToken = Cookies.get('_auth');

@@ -8,6 +8,7 @@ import {
   FaHouseUser,
   FaUmbrellaBeach,
 } from "react-icons/fa";
+import ActividadesHome from "../ui/differentActivities/differentActivitiesHome/ActividadesHome";
 
 const NavbarBottomSection = () => {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -16,6 +17,27 @@ const NavbarBottomSection = () => {
     setActiveIndex(index === activeIndex ? null : index);
   };
 
+  // Define una función para renderizar el componente correspondiente según la opción activa
+  const renderActiveComponent = () => {
+    switch (activeIndex) {
+      case 0:
+        return <Accommodations />;
+      case 1:
+        return <Tickets />;
+      case 2:
+        return <Packages />;
+      case 3:
+        return <Offers />;
+      case 4:
+        return <Rentals />;
+      case 5:
+        return <ActividadesHome />;
+      case 6:
+        return <Cars />;
+      default:
+        return null;
+    }
+  };
   return (
     <div className="text-gray-800 border-b border-black border-opacity-100 shadow-md py-2">
       <div className="flex justify-center pt-4">
@@ -110,6 +132,7 @@ const NavbarBottomSection = () => {
           ))}
         </div>
       </div>
+      {renderActiveComponent()}
     </div>
   );
 };

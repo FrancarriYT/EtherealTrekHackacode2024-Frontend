@@ -5,9 +5,6 @@ import "./styles/NavbarTopSection.css";
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import useSignOut from 'react-auth-kit/hooks/useSignOut';
-import TextContent from "./components/TextContent";
-import ContactInfo from "./components/ContactInfo";
-import SpecialRates from "./components/SpecialRates";
 import AuthProcess from "./components/SignMecanism/AuthProcess";
 import { AdminPage } from "./components/administrate/AdminPage";
 
@@ -42,8 +39,6 @@ const App = () => {
           element={
             <div>
               <Home />
-              <ContactInfo />
-              <SpecialRates />
             </div>
           }
         />

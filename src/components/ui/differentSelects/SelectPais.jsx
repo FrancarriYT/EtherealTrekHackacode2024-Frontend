@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getPaisesPorContinente, getPaises } from "../../classes/PaisesNums/PaisesFunctions";
+import { getPaisesPorContinente, getPaises } from "../../classes/VarietyFunctions/PaisesNums/PaisesFunctions";
 
 export function SelectPaises({ continente, value, onChange }) {
     const [paises, setPaises] = useState([]);
