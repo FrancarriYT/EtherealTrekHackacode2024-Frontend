@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaCar, FaMoneyBill, FaCalendarAlt, FaFlag } from 'react-icons/fa'; // Importar los iconos de Font Awesome
+import { FaCar, FaMoneyBill, FaCalendarAlt, FaFlag, FaBed, FaBus, FaPlane, FaTrain, FaHiking, FaTicketAlt } from 'react-icons/fa'; // Importar los iconos de Font Awesome
 import { ServiciosCarousel } from './differentImagesCarousels/ServiciosCarousel'; // Ruta correcta al componente
 
 const ActividadesCard = ({ servicio }) => {
@@ -17,6 +17,28 @@ const ActividadesCard = ({ servicio }) => {
       setImageIds(prevImageIds => [...prevImageIds, ...imagenes]);
     }
   }, [imagenPrincipal, imagenes]);
+
+  // Función para obtener el emoji correspondiente al tipo de servicio
+  const getTipoServicioEmoji = (tipoServicio) => {
+    switch (tipoServicio) {
+      case "HOTEL_POR_NOCHE":
+        return <FaBed className="h-5 w-5 text-blue-500 inline" />;
+      case "ALQUILER_DE_AUTO":
+        return <FaCar className="h-5 w-5 text-blue-500 inline" />;
+      case "PASAJES_DE_COLECTIVO":
+        return <FaBus className="h-5 w-5 text-blue-500 inline" />;
+      case "PASAJES_DE_AVION":
+        return <FaPlane className="h-5 w-5 text-blue-500 inline" />;
+      case "PASAJES_DE_TREN":
+        return <FaTrain className="h-5 w-5 text-blue-500 inline" />;
+      case "Excursiones":
+        return <FaHiking className="h-5 w-5 text-blue-500 inline" />;
+      case "ENTRADAS_A_EVENTOS":
+        return <FaTicketAlt className="h-5 w-5 text-blue-500 inline" />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="relative flex w-full max-w-[26rem] flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-lg">
@@ -55,7 +77,7 @@ const ActividadesCard = ({ servicio }) => {
               className="cursor-pointer rounded-full border border-cyan-500/5 bg-cyan-500/5 p-3 flex items-center justify-center text-cyan-500 transition-colors hover:border-cyan-500/10 hover:bg-cyan-500/10 hover:!opacity-100 group-hover:opacity-70"
               style={{ width: 'fit-content', height: 'fit-content' }}
             >
-              <FaCar className="h-4 w-4" /> {/* Icono de tipo de servicio */}
+              {getTipoServicioEmoji(tipoServicio)} {/* Icono de tipo de servicio */}
             </span>
           </p>
         </div>

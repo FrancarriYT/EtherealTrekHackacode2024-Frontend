@@ -71,7 +71,7 @@ export async function createPaquete(paqueteData) {
         return { success: false, message: 'Error al crear el paquete. Inténtelo de nuevo más tarde.' };
     }
 }
-export async function editPaquete(paqueteData, email) {
+export async function editPaquete(paqueteData, id) {
     const myBearerToken = Cookies.get('_auth');
     if (!myBearerToken) {
       console.log('No token found in the cookie.');
@@ -79,7 +79,7 @@ export async function editPaquete(paqueteData, email) {
     }
     
     console.log("Se obtuvo el Token de acceso por parte de las cookies, ejecutando importe de información de paquete.");
-    console.log("ID: ", email);
+    console.log("ID: ", id);
     const requestOptions = {
       method: "PUT",
       headers: {
@@ -93,7 +93,7 @@ export async function editPaquete(paqueteData, email) {
 
     try {
 
-      const response = await fetch(baseUrl + `/paquetes/${email}`, requestOptions); // Replace "<string>" with the employee ID
+      const response = await fetch(baseUrl + `/paquetes/${id}`, requestOptions); // Replace "<string>" with the employee ID
       const result = await response.json();
   
       if (!response.ok) {
