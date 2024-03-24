@@ -5,31 +5,29 @@ import { DataTableDemoEmpleado } from "../ui/differentDataTables/DataTableDemoEm
 import { DataTableDemoServicio } from "../ui/differentDataTables/DataTableServicios";
 import { DataTablePaquete } from "../ui/differentDataTables/DataTablePaquetes";
 import { DataTableCliente } from "../ui/differentDataTables/DataTableClientes";
+import { DataTableVentas } from "../ui/differentDataTables/DataTableVentas";
 
-// Components to be rendered inside AdminBox based on selected option
+
 const EmpleadosComponent = () => <DataTableDemoEmpleado />;
 const ClientesComponent = () => <DataTableCliente/>;
-const RolesComponent = () => <div>Contenido de Roles</div>;
 const ServiciosComponent = () => <DataTableDemoServicio/>;
 const PaquetesComponent = () => <DataTablePaquete/>;
-const SettingsComponent = () => <div>Contenido de Settings</div>;
+const VentasComponent = () => <DataTableVentas/>;
 
 export const AdminBox = ({ selectedOption }) => {
-  // Render corresponding component based on selected option
+  
   const renderComponent = () => {
     switch (selectedOption) {
       case "Empleados":
         return <EmpleadosComponent />;
       case "Clientes":
         return <ClientesComponent />;
-      case "Roles":
-        return <RolesComponent />;
       case "Servicios":
         return <ServiciosComponent />;
       case "Paquetes":
         return <PaquetesComponent />;
-      case "Settings":
-        return <SettingsComponent />;
+        case "Ventas":
+          return <VentasComponent />;
       default:
         return <div>Selecciona una opción</div>;
     }

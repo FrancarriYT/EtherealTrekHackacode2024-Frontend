@@ -6,7 +6,6 @@ import { ThemeProvider, useTheme } from "../Theme-provider";
 import { Switch } from "../ui/switch";
 import { Label } from "@radix-ui/react-label";
 import { ProfileDropDownMenu } from "../ui/DropDown-MenuDemo";
-
 export function useLoggedInState() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -56,7 +55,7 @@ export const NavbarTopSection = () => { // Changed to export const NavbarTopSect
         <div className="flex items-center">
           {/* Logo */}
           <img
-            src="./icons/placeholder_logo.webp"
+            src="../icons/EtherealTrekLogo.jpeg"
             alt="Logo"
             className="w-8 h-8 mr-4"
           />

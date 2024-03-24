@@ -17,6 +17,7 @@ import {
     CommandShortcut,
   } from "@/components/ui/Command";
   import { useState } from "react";
+import { FaMoneyBill } from "react-icons/fa";
   
   export function CommandAdmin({ onSelectOption }) {
     const [selectedOption, setSelectedOption] = useState(null);
@@ -70,6 +71,10 @@ import {
                 <EnvelopeClosedIcon className="mr-2 h-4 w-4" />
                 <span>Paquetes</span>
                 <CommandShortcut>⌘B</CommandShortcut>
+              </CommandItem>
+              <CommandItem onSelect={() => handleOptionSelect("Ventas")}>
+                <FaMoneyBill className="mr-2 h-4 w-4" />
+                <span>Ventas</span>
               </CommandItem>
               <CommandItem onSelect={() => handleOptionSelect("Settings")}>
                 <GearIcon className="mr-2 h-4 w-4" />
