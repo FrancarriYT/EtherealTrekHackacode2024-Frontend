@@ -22,10 +22,9 @@ Hemos utilizado Vite y NPM/NPX para la instalación de paquetes.
 
 Los creadores de este proyecto y sus respectivos perfiles de GitHub son:
 
-- [Nombre del creador 1](enlace_al_perfil)
-- [Nombre del creador 2](enlace_al_perfil)
-- [Nombre del creador 3](enlace_al_perfil)
-
+- [Francisco Carrizo](https://github.com/FrancarriYT)
+- [Irving Meza](https://github.com/IrvingMeza95)
+- [José Zambrano](https://github.com/21Zam03)
 ## Créditos
 
 Hemos utilizado varias bibliotecas y recursos para mejorar la disposición y funcionalidad del proyecto:
