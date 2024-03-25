@@ -26,47 +26,47 @@ const LoginForm = () => {
     }
   };
 
-const verifyLogin = async () => {
-  if (param !== 'new') {
-    try {
-      await login(signIn, email, password);
-      const loggedInEmpleado = await loggedEmpleado();
-      setEmpleado(loggedInEmpleado);
+  const verifyLogin = async () => {
+    if (param !== 'new') {
+      try {
+        await login(signIn, email, password);
+        const loggedInEmpleado = await loggedEmpleado();
+        setEmpleado(loggedInEmpleado);
 
-      // Set logged-in empleado in local storage
-      localStorage.setItem('empleado', JSON.stringify(loggedInEmpleado));
+        // Set logged-in empleado in local storage
+        localStorage.setItem('empleado', JSON.stringify(loggedInEmpleado));
 
-      if (isChecked) {
-        document.cookie = "rememberMe=true; max-age=604800";
-        console.log("Opción de mantener sesión creada. Creando cookie para recordar la sesión.");
-      }
-      else {
-        console.log("Opción de mantener sesión creada es falso. No se creará la cookie para recordar la sesión");
-      }
+        if (isChecked) {
+          document.cookie = "rememberMe=true; max-age=604800";
+          console.log("Opción de mantener sesión creada. Creando cookie para recordar la sesión.");
+        }
+        else {
+          console.log("Opción de mantener sesión creada es falso. No se creará la cookie para recordar la sesión");
+        }
 
-      // Redirect to '/'
-      navigate('/'); // assuming you have access to history object or use withRouter HOC
-    } catch (error) {
-      if (error.response && error.response.data) {
-        // If the server returns an error message, log it
-        console.error("Server error:", error.response.data.error);
-      } else if (error.message === "Failed to fetch") {
-        // If the request fails due to network issues
-        console.error("Failed to fetch. Please check your internet connection.");
-      } else {
-        // For any other unexpected errors
-        console.error("An unexpected error occurred:", error.message);
-        toast.error('Fallo en el inicio de sesión. ¿Son las credenciales correctas?')
+        // Redirect to '/'
+        navigate('/'); // assuming you have access to history object or use withRouter HOC
+      } catch (error) {
+        if (error.response && error.response.data) {
+          // If the server returns an error message, log it
+          console.error("Server error:", error.response.data.error);
+        } else if (error.message === "Failed to fetch") {
+          // If the request fails due to network issues
+          console.error("Failed to fetch. Please check your internet connection.");
+        } else {
+          // For any other unexpected errors
+          console.error("An unexpected error occurred:", error.message);
+          toast.error('Fallo en el inicio de sesión. ¿Son las credenciales correctas?')
+        }
       }
     }
-  }
-};
-  
-  
+  };
+
+
 
   useEffect(() => {
     search();
-    
+
   }, [param]);
 
   useEffect(() => {
@@ -135,17 +135,17 @@ const verifyLogin = async () => {
 
   return (
     <div className="new-body">
-        <Toaster
-          toastOptions={{
-            style: {
-              fontSize: '1.5rem', // Increase font size
-              padding: '1rem 1rem', // Increase padding
-            },
-          }}
-          richColors
-          closeButton
-          expand={true}
-        />
+      <Toaster
+        toastOptions={{
+          style: {
+            fontSize: '1.5rem', // Increase font size
+            padding: '1rem 1rem', // Increase padding
+          },
+        }}
+        richColors
+        closeButton
+        expand={true}
+      />
       <main>
         <div className="container__all">
           <div className="back__box">
@@ -175,32 +175,33 @@ const verifyLogin = async () => {
                 placeholder="Contraseña"
                 onChange={(e) => setPassword(e.target.value)}
               />
-            <div className="form-group flex items-center gap-2">
-              <div className="checkbox-container">
-                <input
-                  type="checkbox"
-                  id="session-checkbox"
-                  className="hidden"
-                  checked={isChecked}
-                  onChange={() => setIsChecked(!isChecked)}
-                />
-                <label htmlFor="session-checkbox" className="cursor-pointer">
-                  <div className="w-6 h-6 border-2 rounded-md border-cyan-500 flex items-center justify-center mr-2 focus:outline-none">
-                    {isChecked && (
-                      <svg
-                        className="w-4 h-4 text-cyan-500 fill-current"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M20 6L9 17l-5-5" />
-                      </svg>
-                    )}
-                  </div>
-                  Mantener sesión iniciada
-                </label>
+              <div className="form-group flex items-center gap-2">
+                <div className="checkbox-container"style={{ marginTop: '15px' }}>
+                  <input
+                    type="checkbox"
+                    id="session-checkbox"
+                    className="hidden"
+                    checked={isChecked}
+                    onChange={() => setIsChecked(!isChecked)}
+                  />
+                  <label htmlFor="session-checkbox" className="cursor-pointer flex items-center">
+                    <div className="w-6 h-6 border-2 rounded-md border-cyan-500 flex items-center justify-center mr-2 focus:outline-none">
+                      {isChecked && (
+                        <svg
+                          className="w-4 h-4 text-cyan-500 fill-current"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M20 6L9 17l-5-5" />
+                        </svg>
+                      )}
+                    </div>
+                    Mantener sesión iniciada
+                  </label>
+                </div>
               </div>
-            </div>
-              <button 
-              onClick={verifyLogin} className="bg-cyan-500 text-white"type="button">
+
+              <button
+                onClick={verifyLogin} className="bg-cyan-500 text-white" type="button">
                 Entrar
               </button>
 
@@ -246,7 +247,7 @@ const verifyLogin = async () => {
                   <input type="password" placeholder="Confirmar Contraseña" />
                 </div>
               </div>
-             
+
               {/* Select en donde al endpoint creado sea llamado te devuelva la lista de roles ya existente. */}
               <button className="bg-cyan-500 text-white">Registrarse</button>
               <div className="icons-section">
@@ -263,7 +264,7 @@ const verifyLogin = async () => {
         </div>
       </main>
     </div>
-  ); 
+  );
 };
 
 export default LoginForm;

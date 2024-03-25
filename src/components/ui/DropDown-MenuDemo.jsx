@@ -7,7 +7,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Link, useNavigate } from "react-router-dom";
@@ -50,56 +49,38 @@ export function ProfileDropDownMenu() {
           </Link>
         )}
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 dark:bg-gray-300">
+      <DropdownMenuContent className="w-56 bg-white shadow-md rounded-md ">
         {isLoggedIn ? (
           <>
             <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <Link to="/perfil">
-                <DropdownMenuItem
-                  style={{ color: "black", border: "1px solid black" }}
-                >
+                <DropdownMenuItem>
                   Perfil
-                  <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                 </DropdownMenuItem>
               </Link>
               {/* Add link for admin mode */}
               <Link to="/modo_administrativo">
-                <DropdownMenuItem
-                  style={{ color: "black", border: "1px solid black" }}
-                >
+                <DropdownMenuItem>
                   Modo Administrativo
-                  <DropdownMenuShortcut>⇧⌘A</DropdownMenuShortcut>
                 </DropdownMenuItem>
               </Link>
+              <DropdownMenuItem>
+                Análisis
+              </DropdownMenuItem>
               {/* Otros elementos del menú para usuarios autenticados */}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem
-                style={{
-                  color: "black",
-                  border: "1px solid black",
-                  transition: "box-shadow 0.3s ease",
-                }}
-                onClick={handleSignOut} // Corrected to pass the function without invoking it
-              >
-                Cerrar sesión
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleSignOut}>Cerrar sesión</DropdownMenuItem>
             </DropdownMenuGroup>
           </>
         ) : (
           <>
             {/* Elementos del menú para usuarios no autenticados */}
             <Link to="/login">
-              <DropdownMenuItem
-                style={{
-                  color: "black",
-                  border: "1px solid black",
-                  transition: "box-shadow 0.3s ease",
-                }}
-              >
+              <DropdownMenuItem>
                 Iniciar sesión / Registrarse
               </DropdownMenuItem>
             </Link>

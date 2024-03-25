@@ -8,7 +8,7 @@ const Home = () => {
     <div className="bg-white">
       <NavbarTopSection />
       <NavbarBottomSection />
-      <DateBox/>
+
     </div>
   );
 };

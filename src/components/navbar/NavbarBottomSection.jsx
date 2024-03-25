@@ -7,50 +7,60 @@ import {
   FaFire,
   FaHouseUser,
   FaUmbrellaBeach,
+  FaPlane, // Added FaPlane icon
+  FaTrain,
 } from "react-icons/fa";
-import ActividadesHome from "../ui/differentActivities/differentActivitiesHome/ActividadesHome";
+import AlojamientosHome from "../ui/differentActivities/differentActivitiesHome/AlojamientosHome";
+import ExcursionesHome from "../ui/differentActivities/differentActivitiesHome/ExcursionesHome";
+import AllActivitiesHome from "../ui/differentActivities/differentActivitiesCard/AllActivitiesHome";
+import AlquilerAutoHome from "../ui/differentActivities/differentActivitiesHome/AlquilerAutoHome";
+import PasajesAvionHome from "../ui/differentActivities/differentActivitiesHome/PasajesAvionHome";
+import PasajesTrenHome from "../ui/differentActivities/differentActivitiesHome/PasajesTrenHome";
+import EntradasEventosHome from "../ui/differentActivities/differentActivitiesHome/EntradasAEventosHome";
+import PaquetesHome from "../ui/differentActivities/differentActivitiesHome/PaquetesHome";
 
 const NavbarBottomSection = () => {
-  const [activeIndex, setActiveIndex] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(8);
 
   const handleIconClick = (index) => {
     setActiveIndex(index === activeIndex ? null : index);
   };
 
-  // Define una función para renderizar el componente correspondiente según la opción activa
+
   const renderActiveComponent = () => {
     switch (activeIndex) {
       case 0:
-        return <Accommodations />;
+        return <AlojamientosHome />;
       case 1:
-        return <Tickets />;
+        return <AlquilerAutoHome />;
       case 2:
-        return <Packages />;
+        return <PasajesAvionHome/>; 
       case 3:
-        return <Offers />;
+        return <PasajesTrenHome/>; 
       case 4:
-        return <Rentals />;
+        return <ExcursionesHome />;
       case 5:
-        return <ActividadesHome />;
+        return <EntradasEventosHome/>;
       case 6:
-        return <Cars />;
+        return <PaquetesHome/>;
       default:
-        return null;
+        return <AllActivitiesHome />; // Render the default component
     }
   };
+
   return (
     <div className="text-gray-800 border-b border-black border-opacity-100 shadow-md py-2">
       <div className="flex justify-center pt-4">
         <div className="flex items-center space-x-4">
-          {/* Elementos de la segunda sección de la navbar */}
+          {/* Elements of the second section of the navbar */}
           {[
             "Alojamientos",
-            "Pasajes",
-            "Paquete",
-            "Oferta",
-            "Alquiler",
-            "Actividades",
-            "Autos",
+            "Auto",
+            "Avión",
+            "Tren",
+            "Excursiones",
+            "Eventos",
+            "Paquetes",
           ].map((item, index) => (
             <div
               key={index}
@@ -66,68 +76,15 @@ const NavbarBottomSection = () => {
                   activeIndex === index ? "bg-cyan-100" : ""
                 }`}
               >
-                {index === 0 && (
-                  <FaBed
-                    size={20}
-                    style={{
-                      color: activeIndex === index ? "black" : "inherit",
-                    }}
-                  />
-                )}
-                {index === 1 && (
-                  <FaTicketAlt
-                    size={20}
-                    style={{
-                      color: activeIndex === index ? "black" : "inherit",
-                    }}
-                  />
-                )}
-                {index === 2 && (
-                  <FaBriefcase
-                    size={20}
-                    style={{
-                      color: activeIndex === index ? "black" : "inherit",
-                    }}
-                  />
-                )}
-                {index === 3 && (
-                  <FaFire
-                    size={20}
-                    style={{
-                      color: activeIndex === index ? "black" : "inherit",
-                    }}
-                  />
-                )}
-                {index === 4 && (
-                  <FaHouseUser
-                    size={20}
-                    style={{
-                      color: activeIndex === index ? "black" : "inherit",
-                    }}
-                  />
-                )}
-                {index === 5 && (
-                  <FaUmbrellaBeach
-                    size={20}
-                    style={{
-                      color: activeIndex === index ? "black" : "inherit",
-                    }}
-                  />
-                )}
-                {index === 6 && (
-                  <FaCar
-                    size={20}
-                    style={{
-                      color: activeIndex === index ? "black" : "inherit",
-                    }}
-                  />
-                )}
+                {index === 0 && <FaBed size={20} />}
+                {index === 1 && <FaCar size={20} />}
+                {index === 2 && <FaPlane size={20} />} {/* Added icon for "Avión" */}
+                {index === 3 && <FaTrain size={20} />}
+                {index === 4 && <FaUmbrellaBeach size={20} />} {/* Added icon for "Eventos" */}
+                {index === 5 && <FaFire size={20} />}
+                {index === 6 && <FaBriefcase size={20} />}
               </div>
-              <span
-                className={`mt-2 ${activeIndex === index ? "text-black" : ""}`}
-              >
-                {item}
-              </span>
+              <span className={`mt-2 ${activeIndex === index ? "text-black" : ""}`}>{item}</span>
             </div>
           ))}
         </div>

@@ -2,6 +2,11 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+/* index.css */
+body {
+  overflow-y: auto; /* Habilita el scroll vertical */
+  overflow-x: hidden; /* Deshabilita el scroll horizontal */
+}
 
 
 /* Creación de animaciones de viewport:  */

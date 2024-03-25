@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { FaQuestion, FaLanguage } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import { ThemeProvider, useTheme } from "../Theme-provider";
 import { Switch } from "../ui/switch";
-import { Label } from "@radix-ui/react-label";
 import { ProfileDropDownMenu } from "../ui/DropDown-MenuDemo";
+import EtherealTrekLogo from "../icons/EtherealTrekLogo.jpeg"; // Import the logo image
+import { Label } from "@radix-ui/react-label";
+
 export function useLoggedInState() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -18,7 +19,7 @@ export function useLoggedInState() {
   return isLoggedIn;
 }
 
-export const NavbarTopSection = () => { // Changed to export const NavbarTopSection
+export const NavbarTopSection = () => {
   const { theme, setTheme } = useTheme();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const signOut = useSignOut();
@@ -49,47 +50,32 @@ export const NavbarTopSection = () => { // Changed to export const NavbarTopSect
     navigate('/'); // Navigate to home after logout
   };
 
+  const handleClickLogo = () => {
+    navigate('/');
+  };
+
   return (
-    <div className="bg-white">
+    <div className="bg-[rgba(0,13,32,255)]">
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center">
           {/* Logo */}
           <img
-            src="../icons/EtherealTrekLogo.jpeg"
+            src={EtherealTrekLogo}
             alt="Logo"
-            className="w-8 h-8 mr-4"
+            className="w-20 h-20 mr-4 cursor-pointer glow" // Added glow effect and cursor pointer
+            onClick={handleClickLogo} // Added click event to redirect to "/"
           />
         </div>
-        <div className="flex items-center space-x-2  ">
+        <div className="flex items-center space-x-2">
           <Switch
             id="airplane-mode"
             className="data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-sky-300"
           />
           <Label htmlFor="airplane-mode">Airplane Mode</Label>
         </div>
-        {/* Sección de ayuda, usuario, selector de idiomas y Switch */}
-        <div className="flex items-center space-x-10 bg-gray-200 p-2 rounded-r-md">
-          {/* Ayuda */}
-          <button className="dark-mode-toggle relative">
-            <FaQuestion size={20} className="toggle-icon" />
-          </button>
-
-          {/* Usuario y sesión */}
-          <div className="relative">
-            <ProfileDropDownMenu isLoggedIn={isLoggedIn} handleSignOut={handleSignOut} />
-          </div>
-
-          {/* Selector de idiomas */}
-          <div className="relative">
-            <button className="relative">
-              <FaLanguage size={20} />
-              {/* Popup de idiomas */}
-              {/* Agrega la lógica para mostrar el popup de idiomas aquí */}
-            </button>
-          </div>
-
-          {/* Switch */}
-          {/* <CustomSwitch /> */}
+        {/* Usuario y sesión */}
+        <div className="relative bg-white">
+          <ProfileDropDownMenu isLoggedIn={isLoggedIn} handleSignOut={handleSignOut} />
         </div>
       </div>
     </div>

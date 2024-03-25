@@ -6,6 +6,7 @@ import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import AuthProcess from "./components/SignMecanism/AuthProcess";
+import RequireAuth from '@auth-kit/react-router/RequireAuth'; // Import RequireAuth
 import { AdminPage } from "./components/administrate/AdminPage";
 
 const App = () => {
@@ -33,7 +34,8 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<AuthProcess />} />
         <Route path="/perfil" element={<AuthProcess />} />
-        <Route path="/modo_administrativo" element={<AdminPage />} />
+        {/* Secure the AdminPage route */}
+        <Route path="/modo_administrativo" element={<RequireAuth fallbackPath='/login'><AdminPage /></RequireAuth>} />
         <Route
           path="/"
           element={
